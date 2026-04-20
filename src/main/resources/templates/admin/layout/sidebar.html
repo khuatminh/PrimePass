@@ -2,25 +2,60 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<aside th:fragment="sidebar" class="sidebar d-flex flex-column py-4" style="width:250px;min-height:100vh;background:#1a1d23;">
-    <a class="navbar-brand d-flex align-items-center justify-content-center gap-2 mb-3 text-white" th:href="@{/}">
-        <i class="fa-solid fa-store"></i>
-        <span class="fw-bold">Digital Store</span>
+<aside th:fragment="sidebar(currentPage)" class="sidebar">
+    <a th:href="@{/}" class="sidebar-brand">
+        <div class="brand-mark"><i class="fa-solid fa-bolt"></i></div>
+        <div>
+            <div class="brand-name">PixelVault<span class="text-accent">.</span></div>
+            <div class="brand-sub">Admin Panel</div>
+        </div>
     </a>
-    <nav class="flex-grow-1 mt-3">
-        <ul class="nav flex-column gap-1 px-3">
-            <li><a th:href="@{/admin}" class="nav-link text-white-50"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a></li>
-            <li><a th:href="@{/admin/products}" class="nav-link text-white-50"><i class="fa-solid fa-box me-2"></i>San pham</a></li>
-            <li><a th:href="@{/admin/categories}" class="nav-link text-white-50"><i class="fa-solid fa-tags me-2"></i>Danh muc</a></li>
-            <li><a th:href="@{/admin/keys}" class="nav-link text-white-50"><i class="fa-solid fa-key me-2"></i>Kho Key</a></li>
-            <li><a th:href="@{/admin/orders}" class="nav-link text-white-50"><i class="fa-solid fa-receipt me-2"></i>Don hang</a></li>
-            <li><a th:href="@{/admin/users}" class="nav-link text-white-50"><i class="fa-solid fa-users me-2"></i>Nguoi dung</a></li>
-            <li><a th:href="@{/admin/coupons}" class="nav-link text-white-50"><i class="fa-solid fa-ticket me-2"></i>Coupon</a></li>
-        </ul>
+
+    <div class="sidebar-label">Tổng quan</div>
+    <nav class="sidebar-nav">
+        <a th:href="@{/admin}" class="side-item"
+           th:classappend="${currentPage == 'dashboard'} ? ' active' : ''">
+            <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
     </nav>
-    <div class="px-3 mt-auto">
+
+    <div class="sidebar-label">Quản lý</div>
+    <nav class="sidebar-nav">
+        <a th:href="@{/admin/categories}" class="side-item"
+           th:classappend="${currentPage == 'categories'} ? ' active' : ''">
+            <i class="fa-solid fa-tags"></i> Danh Mục
+        </a>
+        <a th:href="@{/admin/products}" class="side-item"
+           th:classappend="${currentPage == 'products'} ? ' active' : ''">
+            <i class="fa-solid fa-box"></i> Sản Phẩm
+        </a>
+        <a th:href="@{/admin/keys}" class="side-item"
+           th:classappend="${currentPage == 'keys'} ? ' active' : ''">
+            <i class="fa-solid fa-key"></i> Kho Key
+        </a>
+        <a th:href="@{/admin/orders}" class="side-item"
+           th:classappend="${currentPage == 'orders'} ? ' active' : ''">
+            <i class="fa-solid fa-receipt"></i> Đơn Hàng
+        </a>
+        <a th:href="@{/admin/users}" class="side-item"
+           th:classappend="${currentPage == 'users'} ? ' active' : ''">
+            <i class="fa-solid fa-users"></i> Người Dùng
+        </a>
+        <a th:href="@{/admin/coupons}" class="side-item"
+           th:classappend="${currentPage == 'coupons'} ? ' active' : ''">
+            <i class="fa-solid fa-ticket"></i> Mã Giảm Giá
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a th:href="@{/}" class="side-item mb-2">
+            <i class="fa-solid fa-arrow-left"></i> Về Trang Chủ
+        </a>
         <form th:action="@{/auth/logout}" method="post">
-            <button type="submit" class="btn btn-outline-danger w-100">Dang xuat</button>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="btn btn-outline w-100 text-danger-custom" style="border-color:var(--danger);font-size:13px;">
+                <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+            </button>
         </form>
     </div>
 </aside>
