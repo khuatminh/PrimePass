@@ -1,33 +1,60 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><title>Nguoi Dung | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
-<body class="bg-dark text-white">
-<div class="d-flex" style="min-height:100vh">
-    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
-    <div class="flex-grow-1 d-flex flex-column">
-        <div th:replace="~{admin/layout/header :: header('Quan Ly Nguoi Dung')}"></div>
-        <main class="p-4">
-            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-            <table class="table table-dark table-striped">
-                <thead><tr><th>#</th><th>Username</th><th>Email</th><th>Ho ten</th><th>Role</th><th></th></tr></thead>
+<head>
+    <title>Người dùng — Admin PixelVault</title>
+    <th:block th:replace="~{admin/layout/css :: css}" />
+</head>
+<body>
+<div class="admin-shell">
+    <th:block th:replace="~{admin/layout/sidebar :: sidebar(currentPage='users')}" />
+    <main class="admin-main">
+        <div class="page-header">
+            <h1>Quản lý người dùng</h1>
+        </div>
+
+        <div th:if="${successMessage}" class="mb-4" style="background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);color:var(--success);padding:12px 16px;border-radius:var(--r-sm);font-size:14px;">
+            <i class="fa-solid fa-check-circle"></i> <span th:text="${successMessage}"></span>
+        </div>
+
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Họ tên</th>
+                        <th>Role</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr th:each="u : ${users}">
-                        <td th:text="${u.id}"></td>
-                        <td th:text="${u.username}"></td>
-                        <td th:text="${u.email}"></td>
+                        <td class="font-mono text-muted-custom" th:text="${u.id}"></td>
+                        <td class="fw-semibold" th:text="${u.username}"></td>
+                        <td class="text-muted-custom" style="font-size:13px;" th:text="${u.email}"></td>
                         <td th:text="${u.fullName}"></td>
-                        <td><span class="badge" th:classappend="${u.role.name() == 'admin'} ? 'bg-danger' : 'bg-info'" th:text="${u.role}"></span></td>
                         <td>
-                            <form th:action="@{/admin/users/{id}/toggle-role(id=${u.id})}" method="post">
-                                <button class="btn btn-sm btn-outline-warning">Doi role</button>
+                            <span th:if="${u.role.name() == 'admin'}" class="pill pill-danger" style="font-size:11px;">Admin</span>
+                            <span th:unless="${u.role.name() == 'admin'}" class="pill pill-accent" style="font-size:11px;" th:text="${u.role}">User</span>
+                        </td>
+                        <td>
+                            <form th:action="@{/admin/users/{id}/toggle-role(id=${u.id})}" method="post" class="d-inline">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button type="submit" class="btn btn-ghost px-2 py-1" style="font-size:12px;">
+                                    Đổi role
+                                </button>
                             </form>
                         </td>
                     </tr>
+                    <tr th:if="${users == null or users.empty}">
+                        <td colspan="6" class="text-center text-muted-custom p-4">Không có người dùng nào.</td>
+                    </tr>
                 </tbody>
             </table>
-        </main>
-    </div>
+        </div>
+    </main>
 </div>
-<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+<th:block th:replace="~{admin/layout/js :: js}" />
 </body>
 </html>

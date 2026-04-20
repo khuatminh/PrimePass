@@ -1,39 +1,82 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><title>Variants | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
-<body class="bg-dark text-white">
-<div class="d-flex" style="min-height:100vh">
-    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
-    <div class="flex-grow-1 d-flex flex-column">
-        <div th:replace="~{admin/layout/header :: header('Quan Ly Variants')}"></div>
-        <main class="p-4">
-            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-            <h5>San pham: <strong th:text="${product.name}"></strong></h5>
-            <a th:href="@{/admin/products}" class="btn btn-sm btn-outline-secondary mb-3">&larr; Quay lai</a>
-            <table class="table table-dark table-striped mb-4">
-                <thead><tr><th>Label</th><th>Gia</th><th>Ton kho</th><th></th></tr></thead>
-                <tbody>
-                    <tr th:each="v : ${variants}">
-                        <td th:text="${v.variantLabel}"></td>
-                        <td th:text="${#numbers.formatDecimal(v.price,0,'COMMA',0,'POINT') + 'd'}"></td>
-                        <td th:text="${v.stockCount}"></td>
-                        <td><a th:href="@{/admin/products/{pid}/variants/delete/{vid}(pid=${product.id},vid=${v.id})}" onclick="return confirm('Xoa variant nay?')" class="btn btn-sm btn-outline-danger">Xoa</a></td>
-                    </tr>
-                    <tr th:if="${variants.isEmpty()}"><td colspan="4" class="text-center text-muted">Chua co variant nao</td></tr>
-                </tbody>
-            </table>
-            <div class="card bg-secondary p-4 rounded-4" style="max-width:500px">
-                <h6 class="fw-bold mb-3">Them Variant Moi</h6>
+<head>
+    <title>Variants — Admin PixelVault</title>
+    <th:block th:replace="~{admin/layout/css :: css}" />
+</head>
+<body>
+<div class="admin-shell">
+    <th:block th:replace="~{admin/layout/sidebar :: sidebar(currentPage='products')}" />
+    <main class="admin-main">
+        <div class="page-header">
+            <h1>Quản lý Variants</h1>
+            <p>Sản phẩm: <strong th:text="${product.name}"></strong></p>
+        </div>
+
+        <div th:if="${successMessage}" class="mb-4" style="background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);color:var(--success);padding:12px 16px;border-radius:var(--r-sm);font-size:14px;">
+            <i class="fa-solid fa-check-circle"></i> <span th:text="${successMessage}"></span>
+        </div>
+
+        <div class="d-grid" style="grid-template-columns:1fr 380px;gap:24px;align-items:start;">
+            <div>
+                <div class="table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nhãn variant</th>
+                                <th>Giá</th>
+                                <th>Tồn kho</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="v : ${variants}">
+                                <td class="fw-semibold" th:text="${v.variantLabel}"></td>
+                                <td class="font-mono" th:text="'₫' + ${#numbers.formatDecimal(v.price,0,'COMMA',0,'POINT')}">₫0</td>
+                                <td th:text="${v.stockCount}"></td>
+                                <td>
+                                    <a th:href="@{/admin/products/{pid}/variants/delete/{vid}(pid=${product.id},vid=${v.id})}"
+                                       class="btn btn-ghost px-2 py-1 text-danger-custom" style="font-size:12px;"
+                                       onclick="return confirm('Xóa variant này?')">Xóa</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${variants == null or variants.empty}">
+                                <td colspan="4" class="text-center text-muted-custom p-4">Chưa có variant nào.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3">
+                    <a th:href="@{/admin/products}" class="btn btn-ghost" style="font-size:13px;">
+                        <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
+                    </a>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <h3 class="font-display" style="font-size:16px;margin-bottom:18px;">Thêm variant mới</h3>
                 <form th:action="@{/admin/products/{id}/variants/add(id=${product.id})}" method="post">
-                    <div class="mb-3"><label class="form-label">Nhan variant</label><input type="text" name="variantLabel" class="form-control" placeholder="VD: 06 thang, Premium - 12 thang" required/></div>
-                    <div class="mb-3"><label class="form-label">Gia (d)</label><input type="number" name="price" class="form-control" required/></div>
-                    <div class="mb-3"><label class="form-label">So luong ton kho</label><input type="number" name="stockCount" class="form-control" value="0" required/></div>
-                    <button type="submit" class="btn btn-primary">Them Variant</button>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <div class="form-field">
+                        <label>Nhãn variant *</label>
+                        <input type="text" name="variantLabel" placeholder="VD: 1 tháng, 6 tháng..." required />
+                    </div>
+                    <div class="form-field">
+                        <label>Giá (₫) *</label>
+                        <input type="number" name="price" required min="0" />
+                    </div>
+                    <div class="form-field">
+                        <label>Tồn kho *</label>
+                        <input type="number" name="stockCount" value="0" required min="0" />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 justify-content-center">
+                        <i class="fa-solid fa-plus"></i> Thêm variant
+                    </button>
                 </form>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
 </div>
-<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+<th:block th:replace="~{admin/layout/js :: js}" />
 </body>
 </html>

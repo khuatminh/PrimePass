@@ -1,35 +1,82 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><title>Sua San Pham | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
-<body class="bg-dark text-white">
-<div class="d-flex" style="min-height:100vh">
-    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
-    <div class="flex-grow-1 d-flex flex-column">
-        <div th:replace="~{admin/layout/header :: header('Sua San Pham')}"></div>
-        <main class="p-4" style="max-width:700px">
+<head>
+    <title>Sửa sản phẩm — Admin PixelVault</title>
+    <th:block th:replace="~{admin/layout/css :: css}" />
+</head>
+<body>
+<div class="admin-shell">
+    <th:block th:replace="~{admin/layout/sidebar :: sidebar(currentPage='products')}" />
+    <main class="admin-main">
+        <div class="page-header">
+            <h1>Sửa sản phẩm</h1>
+            <p th:text="'ID: ' + ${product.id}"></p>
+        </div>
+        <div class="form-card" style="max-width:680px;">
             <form th:action="@{/admin/products/edit/{id}(id=${product.id})}" method="post" enctype="multipart/form-data">
-                <div class="mb-3"><label class="form-label">Ten san pham *</label><input type="text" name="name" class="form-control" th:value="${product.name}" required/></div>
-                <div class="mb-3"><label class="form-label">Mo ta</label><textarea name="description" class="form-control" rows="4" th:text="${product.description}"></textarea></div>
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6"><label class="form-label">Danh muc *</label>
-                        <select name="categoryId" class="form-select" required><option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}" th:selected="${cat.id == product.category.id}"></option></select></div>
-                    <div class="col-md-6"><label class="form-label">Loai giao hang</label>
-                        <select name="deliveryType" class="form-select"><option th:each="dt : ${deliveryTypes}" th:value="${dt}" th:text="${dt}" th:selected="${dt == product.deliveryType}"></option></select></div>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div class="form-field">
+                    <label>Tên sản phẩm *</label>
+                    <input type="text" name="name" th:value="${product.name}" required />
                 </div>
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6"><label class="form-label">Gia goc (d)</label><input type="number" name="originalPrice" class="form-control" th:value="${product.originalPrice}"/></div>
-                    <div class="col-md-6"><label class="form-label">Gia ban (d)</label><input type="number" name="salePrice" class="form-control" th:value="${product.salePrice}"/></div>
+                <div class="form-field">
+                    <label>Mô tả ngắn</label>
+                    <input type="text" name="shortDescription" value="" />
                 </div>
-                <div class="mb-3"><label class="form-label">Bao hanh</label><input type="text" name="warrantyInfo" class="form-control" th:value="${product.warrantyInfo}"/></div>
-                <div class="mb-3"><label class="form-label">Anh san pham</label><input type="file" name="imageFile" class="form-control" accept="image/*"/></div>
-                <div class="mb-3 form-check"><input type="checkbox" name="isFeatured" id="featured" class="form-check-input" th:checked="${product.isFeatured}"/><label class="form-check-label" for="featured">San pham noi bat</label></div>
-                <div class="mb-3 form-check"><input type="checkbox" name="isActive" id="active" class="form-check-input" th:checked="${product.isActive}"/><label class="form-check-label" for="active">Hien thi</label></div>
-                <a th:href="@{/admin/products}" class="btn btn-secondary me-2">Huy</a>
-                <button type="submit" class="btn btn-primary">Cap nhat</button>
+                <div class="form-field">
+                    <label>Mô tả chi tiết</label>
+                    <textarea name="description" rows="5" th:text="${product.description}"></textarea>
+                </div>
+                <div class="d-grid" style="grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="form-field">
+                        <label>Danh mục *</label>
+                        <select name="categoryId" required>
+                            <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"
+                                    th:selected="${product.category != null and cat.id == product.category.id}"></option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Loại giao hàng</label>
+                        <select name="deliveryType">
+                            <option th:each="dt : ${deliveryTypes}" th:value="${dt}" th:text="${dt}"
+                                    th:selected="${dt == product.deliveryType}"></option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Giá gốc (₫)</label>
+                        <input type="number" name="originalPrice" th:value="${product.originalPrice}" min="0" />
+                    </div>
+                    <div class="form-field">
+                        <label>Giá bán (₫) *</label>
+                        <input type="number" name="salePrice" th:value="${product.salePrice}" min="0" required />
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>Bảo hành</label>
+                    <input type="text" name="warrantyInfo" th:value="${product.warrantyInfo}" />
+                </div>
+                <div class="form-field">
+                    <label>Ảnh mới (để trống nếu giữ nguyên)</label>
+                    <input type="file" name="imageFile" accept="image/*" />
+                </div>
+                <div class="d-flex gap-3 mb-4">
+                    <label class="d-flex align-items-center gap-2 text-muted-custom" style="cursor:pointer;font-size:14px;">
+                        <input type="checkbox" name="isFeatured" th:checked="${product.isFeatured}" style="accent-color:var(--accent);width:16px;height:16px;" />
+                        Sản phẩm nổi bật
+                    </label>
+                    <label class="d-flex align-items-center gap-2 text-muted-custom" style="cursor:pointer;font-size:14px;">
+                        <input type="checkbox" name="isActive" th:checked="${product.isActive}" style="accent-color:var(--accent);width:16px;height:16px;" />
+                        Hiển thị trên cửa hàng
+                    </label>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Cập nhật</button>
+                    <a th:href="@{/admin/products}" class="btn btn-ghost">Hủy</a>
+                </div>
             </form>
-        </main>
-    </div>
+        </div>
+    </main>
 </div>
-<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+<th:block th:replace="~{admin/layout/js :: js}" />
 </body>
 </html>

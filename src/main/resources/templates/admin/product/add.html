@@ -1,34 +1,80 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><title>Them San Pham | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
-<body class="bg-dark text-white">
-<div class="d-flex" style="min-height:100vh">
-    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
-    <div class="flex-grow-1 d-flex flex-column">
-        <div th:replace="~{admin/layout/header :: header('Them San Pham')}"></div>
-        <main class="p-4" style="max-width:700px">
+<head>
+    <title>Thêm sản phẩm — Admin PixelVault</title>
+    <th:block th:replace="~{admin/layout/css :: css}" />
+</head>
+<body>
+<div class="admin-shell">
+    <th:block th:replace="~{admin/layout/sidebar :: sidebar(currentPage='products')}" />
+    <main class="admin-main">
+        <div class="page-header">
+            <h1>Thêm sản phẩm mới</h1>
+        </div>
+        <div class="form-card" style="max-width:680px;">
             <form th:action="@{/admin/products/add}" method="post" enctype="multipart/form-data">
-                <div class="mb-3"><label class="form-label">Ten san pham *</label><input type="text" name="name" class="form-control" required/></div>
-                <div class="mb-3"><label class="form-label">Mo ta</label><textarea name="description" class="form-control" rows="4"></textarea></div>
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6"><label class="form-label">Danh muc *</label>
-                        <select name="categoryId" class="form-select" required><option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option></select></div>
-                    <div class="col-md-6"><label class="form-label">Loai giao hang</label>
-                        <select name="deliveryType" class="form-select"><option th:each="dt : ${deliveryTypes}" th:value="${dt}" th:text="${dt}"></option></select></div>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div class="form-field">
+                    <label>Tên sản phẩm *</label>
+                    <input type="text" name="name" required placeholder="VD: Netflix Premium 4K" />
                 </div>
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6"><label class="form-label">Gia goc (d)</label><input type="number" name="originalPrice" class="form-control" value="0"/></div>
-                    <div class="col-md-6"><label class="form-label">Gia ban (d)</label><input type="number" name="salePrice" class="form-control" value="0"/></div>
+                <div class="form-field">
+                    <label>Mô tả ngắn</label>
+                    <input type="text" name="shortDescription" placeholder="Hiển thị trong danh sách sản phẩm" />
                 </div>
-                <div class="mb-3"><label class="form-label">Bao hanh</label><input type="text" name="warrantyInfo" class="form-control"/></div>
-                <div class="mb-3"><label class="form-label">Anh san pham</label><input type="file" name="imageFile" class="form-control" accept="image/*"/></div>
-                <div class="mb-3 form-check"><input type="checkbox" name="isFeatured" id="featured" class="form-check-input"/><label class="form-check-label" for="featured">San pham noi bat</label></div>
-                <a th:href="@{/admin/products}" class="btn btn-secondary me-2">Huy</a>
-                <button type="submit" class="btn btn-primary">Them san pham</button>
+                <div class="form-field">
+                    <label>Mô tả chi tiết</label>
+                    <textarea name="description" rows="5" placeholder="HTML được hỗ trợ..."></textarea>
+                </div>
+                <div class="d-grid" style="grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="form-field">
+                        <label>Danh mục *</label>
+                        <select name="categoryId" required>
+                            <option value="">-- Chọn danh mục --</option>
+                            <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Loại giao hàng</label>
+                        <select name="deliveryType">
+                            <option th:each="dt : ${deliveryTypes}" th:value="${dt}" th:text="${dt}"></option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Giá gốc (₫)</label>
+                        <input type="number" name="originalPrice" value="0" min="0" />
+                    </div>
+                    <div class="form-field">
+                        <label>Giá bán (₫) *</label>
+                        <input type="number" name="salePrice" value="0" min="0" required />
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>Bảo hành</label>
+                    <input type="text" name="warrantyInfo" placeholder="VD: Bảo hành 30 ngày" />
+                </div>
+                <div class="form-field">
+                    <label>Ảnh sản phẩm</label>
+                    <input type="file" name="imageFile" accept="image/*" />
+                </div>
+                <div class="d-flex gap-3 mb-4">
+                    <label class="d-flex align-items-center gap-2 text-muted-custom" style="cursor:pointer;font-size:14px;">
+                        <input type="checkbox" name="isFeatured" style="accent-color:var(--accent);width:16px;height:16px;" />
+                        Sản phẩm nổi bật
+                    </label>
+                    <label class="d-flex align-items-center gap-2 text-muted-custom" style="cursor:pointer;font-size:14px;">
+                        <input type="checkbox" name="isActive" checked style="accent-color:var(--accent);width:16px;height:16px;" />
+                        Hiển thị trên cửa hàng
+                    </label>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Thêm sản phẩm</button>
+                    <a th:href="@{/admin/products}" class="btn btn-ghost">Hủy</a>
+                </div>
             </form>
-        </main>
-    </div>
+        </div>
+    </main>
 </div>
-<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+<th:block th:replace="~{admin/layout/js :: js}" />
 </body>
 </html>

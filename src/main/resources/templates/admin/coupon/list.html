@@ -1,59 +1,115 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><title>Coupon | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
-<body class="bg-dark text-white">
-<div class="d-flex" style="min-height:100vh">
-    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
-    <div class="flex-grow-1 d-flex flex-column">
-        <div th:replace="~{admin/layout/header :: header('Quan Ly Coupon')}"></div>
-        <main class="p-4">
-            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-            <div class="d-flex justify-content-between mb-3">
-                <h5 class="fw-bold">Danh Sach Coupon</h5>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCouponModal">+ Them</button>
-            </div>
-            <table class="table table-dark table-striped">
-                <thead><tr><th>Code</th><th>Loai</th><th>Gia tri</th><th>Da dung</th><th>Het han</th><th>Trang thai</th><th></th></tr></thead>
-                <tbody>
-                    <tr th:each="c : ${coupons}">
-                        <td><strong th:text="${c.code}"></strong></td>
-                        <td th:text="${c.discountType}"></td>
-                        <td th:text="${c.discountType.name() == 'percent'} ? ${c.discountValue + '%'} : ${#numbers.formatDecimal(c.discountValue,0,'COMMA',0,'POINT') + 'd'}"></td>
-                        <td th:text="${c.usedCount + '/' + c.maxUses}"></td>
-                        <td th:text="${c.endDate != null ? c.endDate : 'infinity'}"></td>
-                        <td><span class="badge" th:classappend="${c.isActive} ? 'bg-success' : 'bg-secondary'" th:text="${c.isActive} ? 'Active' : 'Tat'"></span></td>
-                        <td>
-                            <form th:action="@{/admin/coupons/{id}/toggle(id=${c.id})}" method="post">
-                                <button class="btn btn-sm btn-outline-warning">Toggle</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </main>
-    </div>
-</div>
-<div class="modal fade" id="addCouponModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-secondary text-white">
-            <div class="modal-header"><h5 class="modal-title">Them Coupon</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-            <form th:action="@{/admin/coupons/add}" th:object="${newCoupon}" method="post">
-                <div class="modal-body">
-                    <div class="mb-3"><label class="form-label">Code</label><input type="text" th:field="*{code}" class="form-control" required/></div>
-                    <div class="mb-3"><label class="form-label">Loai giam</label><select th:field="*{discountType}" class="form-select"><option th:each="dt : ${discountTypes}" th:value="${dt}" th:text="${dt}"></option></select></div>
-                    <div class="mb-3"><label class="form-label">Gia tri (% hoac d)</label><input type="number" th:field="*{discountValue}" class="form-control" required/></div>
-                    <div class="mb-3"><label class="form-label">Don toi thieu (d)</label><input type="number" th:field="*{minOrderAmount}" class="form-control" value="0"/></div>
-                    <div class="mb-3"><label class="form-label">So lan dung toi da</label><input type="number" th:field="*{maxUses}" class="form-control" value="100"/></div>
-                    <div class="row g-2">
-                        <div class="col"><label class="form-label">Tu ngay</label><input type="date" th:field="*{startDate}" class="form-control"/></div>
-                        <div class="col"><label class="form-label">Den ngay</label><input type="date" th:field="*{endDate}" class="form-control"/></div>
-                    </div>
-                </div>
-                <div class="modal-footer"><button type="submit" class="btn btn-primary">Them</button></div>
-            </form>
+<head>
+    <title>Mã giảm giá — Admin PixelVault</title>
+    <th:block th:replace="~{admin/layout/css :: css}" />
+</head>
+<body>
+<div class="admin-shell">
+    <th:block th:replace="~{admin/layout/sidebar :: sidebar(currentPage='coupons')}" />
+    <main class="admin-main">
+        <div class="page-header">
+            <h1>Mã giảm giá</h1>
         </div>
-    </div>
+
+        <div th:if="${successMessage}" class="mb-4" style="background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);color:var(--success);padding:12px 16px;border-radius:var(--r-sm);font-size:14px;">
+            <i class="fa-solid fa-check-circle"></i> <span th:text="${successMessage}"></span>
+        </div>
+
+        <div class="d-grid" style="grid-template-columns:1fr 380px;gap:24px;align-items:start;">
+
+            <!-- Coupon table -->
+            <div class="table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Loại</th>
+                            <th>Giá trị</th>
+                            <th>Đã dùng</th>
+                            <th>Hết hạn</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${coupons}">
+                            <td class="font-mono fw-bold text-accent" th:text="${c.code}"></td>
+                            <td class="text-muted-custom" style="font-size:12px;" th:text="${c.discountType}"></td>
+                            <td class="font-mono">
+                                <span th:if="${c.discountType.name() == 'percent'}" th:text="${c.discountValue + '%'}"></span>
+                                <span th:unless="${c.discountType.name() == 'percent'}"
+                                      th:text="'₫' + ${#numbers.formatDecimal(c.discountValue,0,'COMMA',0,'POINT')}"></span>
+                            </td>
+                            <td class="font-mono" style="font-size:13px;"
+                                th:text="${c.usedCount + '/' + c.maxUses}"></td>
+                            <td class="text-muted-custom" style="font-size:12px;"
+                                th:text="${c.endDate != null ? c.endDate : '∞'}"></td>
+                            <td>
+                                <span th:if="${c.isActive}" class="pill pill-success" style="font-size:11px;">Đang bật</span>
+                                <span th:unless="${c.isActive}" class="pill" style="font-size:11px;">Đã tắt</span>
+                            </td>
+                            <td>
+                                <form th:action="@{/admin/coupons/{id}/toggle(id=${c.id})}" method="post" class="d-inline">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit" class="btn btn-ghost px-2 py-1" style="font-size:12px;">
+                                        Toggle
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${coupons == null or coupons.empty}">
+                            <td colspan="7" class="text-center text-muted-custom p-4">Chưa có mã giảm giá nào.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Add coupon form -->
+            <div class="form-card">
+                <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:18px;">Thêm mã giảm giá</h3>
+                <form th:action="@{/admin/coupons/add}" th:object="${newCoupon}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <div class="form-field">
+                        <label>Code *</label>
+                        <input type="text" th:field="*{code}" placeholder="VD: SALE50" required />
+                    </div>
+                    <div class="form-field">
+                        <label>Loại giảm</label>
+                        <select th:field="*{discountType}">
+                            <option th:each="dt : ${discountTypes}" th:value="${dt}" th:text="${dt}"></option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Giá trị (% hoặc ₫)</label>
+                        <input type="number" th:field="*{discountValue}" required min="0" />
+                    </div>
+                    <div class="form-field">
+                        <label>Đơn tối thiểu (₫)</label>
+                        <input type="number" th:field="*{minOrderAmount}" value="0" min="0" />
+                    </div>
+                    <div class="form-field">
+                        <label>Số lần dùng tối đa</label>
+                        <input type="number" th:field="*{maxUses}" value="100" min="1" />
+                    </div>
+                    <div class="d-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
+                        <div class="form-field">
+                            <label>Từ ngày</label>
+                            <input type="date" th:field="*{startDate}" />
+                        </div>
+                        <div class="form-field">
+                            <label>Đến ngày</label>
+                            <input type="date" th:field="*{endDate}" />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 justify-content-center">
+                        <i class="fa-solid fa-plus"></i> Thêm mã
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
 </div>
-<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+<th:block th:replace="~{admin/layout/js :: js}" />
 </body>
 </html>

@@ -1,24 +1,50 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><title>Sua Danh Muc | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
-<body class="bg-dark text-white">
-<div class="d-flex" style="min-height:100vh">
-    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
-    <div class="flex-grow-1 d-flex flex-column">
-        <div th:replace="~{admin/layout/header :: header('Sua Danh Muc')}"></div>
-        <main class="p-4" style="max-width:600px">
+<head>
+    <title>Sửa danh mục — Admin PixelVault</title>
+    <th:block th:replace="~{admin/layout/css :: css}" />
+</head>
+<body>
+<div class="admin-shell">
+    <th:block th:replace="~{admin/layout/sidebar :: sidebar(currentPage='categories')}" />
+    <main class="admin-main">
+        <div class="page-header">
+            <h1>Sửa danh mục</h1>
+            <p th:text="'ID: ' + ${category.id}"></p>
+        </div>
+        <div class="form-card" style="max-width:560px;">
             <form th:action="@{/admin/categories/edit/{id}(id=${category.id})}" th:object="${category}" method="post">
-                <div class="mb-3"><label class="form-label">Ten</label><input type="text" th:field="*{name}" class="form-control" required/></div>
-                <div class="mb-3"><label class="form-label">Icon URL</label><input type="text" th:field="*{iconUrl}" class="form-control"/></div>
-                <div class="mb-3"><label class="form-label">Mo ta</label><textarea th:field="*{description}" class="form-control" rows="3"></textarea></div>
-                <div class="mb-3"><label class="form-label">Thu tu</label><input type="number" th:field="*{sortOrder}" class="form-control"/></div>
-                <div class="mb-3 form-check"><input type="checkbox" th:field="*{isActive}" class="form-check-input"/><label class="form-check-label">Hien thi</label></div>
-                <a th:href="@{/admin/categories}" class="btn btn-secondary me-2">Huy</a>
-                <button type="submit" class="btn btn-primary">Luu</button>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div class="form-field">
+                    <label>Tên danh mục *</label>
+                    <input type="text" th:field="*{name}" required />
+                </div>
+                <div class="form-field">
+                    <label>Icon URL</label>
+                    <input type="text" th:field="*{iconUrl}" placeholder="https://..." />
+                </div>
+                <div class="form-field">
+                    <label>Mô tả</label>
+                    <textarea th:field="*{description}" rows="3" placeholder="Mô tả ngắn..."></textarea>
+                </div>
+                <div class="form-field">
+                    <label>Thứ tự hiển thị</label>
+                    <input type="number" th:field="*{sortOrder}" min="0" />
+                </div>
+                <div class="form-field d-flex align-items-center gap-2">
+                    <input type="checkbox" th:field="*{isActive}" id="isActive" style="width:auto;accent-color:var(--accent);" />
+                    <label for="isActive" class="mb-0" style="cursor:pointer;">Hiển thị trên cửa hàng</label>
+                </div>
+                <div class="d-flex gap-2 mt-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-check"></i> Lưu thay đổi
+                    </button>
+                    <a th:href="@{/admin/categories}" class="btn btn-ghost">Hủy</a>
+                </div>
             </form>
-        </main>
-    </div>
+        </div>
+    </main>
 </div>
-<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+<th:block th:replace="~{admin/layout/js :: js}" />
 </body>
 </html>

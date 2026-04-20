@@ -1,57 +1,106 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><title>Danh Muc | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
-<body class="bg-dark text-white">
-<div class="d-flex" style="min-height:100vh">
-    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
-    <div class="flex-grow-1 d-flex flex-column">
-        <div th:replace="~{admin/layout/header :: header('Quan Ly Danh Muc')}"></div>
-        <main class="p-4">
-            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-            <div class="row g-3 mb-4">
-                <div class="col-md-4"><div class="card bg-secondary p-3 rounded-4 text-white"><div class="small">Tong danh muc</div><h3 th:text="${totalCategories}">0</h3></div></div>
-                <div class="col-md-4"><div class="card bg-secondary p-3 rounded-4 text-white"><div class="small">Dang hoat dong</div><h3 th:text="${activeCategories}">0</h3></div></div>
-                <div class="col-md-4"><div class="card bg-secondary p-3 rounded-4 text-white"><div class="small">Tong san pham</div><h3 th:text="${totalProducts}">0</h3></div></div>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0">Danh Sach Danh Muc</h5>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">+ Them danh muc</button>
-            </div>
-            <table class="table table-dark table-striped">
-                <thead><tr><th>#</th><th>Ten</th><th>Slug</th><th>Trang thai</th><th>Thu tu</th><th></th></tr></thead>
-                <tbody>
-                    <tr th:each="cat : ${categories}">
-                        <td th:text="${cat.id}"></td>
-                        <td th:text="${cat.name}"></td>
-                        <td th:text="${cat.slug}"></td>
-                        <td><span class="badge" th:classappend="${cat.isActive} ? 'bg-success' : 'bg-secondary'" th:text="${cat.isActive} ? 'Hien' : 'An'"></span></td>
-                        <td th:text="${cat.sortOrder}"></td>
-                        <td>
-                            <a th:href="@{/admin/categories/edit/{id}(id=${cat.id})}" class="btn btn-sm btn-outline-primary me-1">Sua</a>
-                            <a th:href="@{/admin/categories/delete/{id}(id=${cat.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xoa danh muc nay?')">Xoa</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </main>
-    </div>
-</div>
-<div class="modal fade" id="addModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-secondary text-white">
-            <div class="modal-header"><h5 class="modal-title">Them Danh Muc</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-            <form th:action="@{/admin/categories/add}" th:object="${newCategory}" method="post">
-                <div class="modal-body">
-                    <div class="mb-3"><label class="form-label">Ten danh muc</label><input type="text" th:field="*{name}" class="form-control" required/></div>
-                    <div class="mb-3"><label class="form-label">Icon URL</label><input type="text" th:field="*{iconUrl}" class="form-control"/></div>
-                    <div class="mb-3"><label class="form-label">Mo ta</label><textarea th:field="*{description}" class="form-control" rows="2"></textarea></div>
-                    <div class="mb-3"><label class="form-label">Thu tu</label><input type="number" th:field="*{sortOrder}" class="form-control" value="0"/></div>
-                </div>
-                <div class="modal-footer"><button type="submit" class="btn btn-primary">Them</button></div>
-            </form>
+<head>
+    <title>Danh mục — Admin PixelVault</title>
+    <th:block th:replace="~{admin/layout/css :: css}" />
+</head>
+<body>
+<div class="admin-shell">
+    <th:block th:replace="~{admin/layout/sidebar :: sidebar(currentPage='categories')}" />
+    <main class="admin-main">
+        <div class="page-header">
+            <h1>Quản lý danh mục</h1>
+            <p>Tạo và chỉnh sửa danh mục sản phẩm</p>
         </div>
-    </div>
+
+        <div th:if="${successMessage}" class="mb-4" style="background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);color:var(--success);padding:12px 16px;border-radius:var(--r-sm);font-size:14px;">
+            <i class="fa-solid fa-check-circle"></i> <span th:text="${successMessage}"></span>
+        </div>
+
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="kpi">
+                <div class="kpi-label">Tổng danh mục</div>
+                <div class="kpi-value" th:text="${totalCategories}">0</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Đang hiển thị</div>
+                <div class="kpi-value" th:text="${activeCategories}">0</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Tổng sản phẩm</div>
+                <div class="kpi-value" th:text="${totalProducts}">0</div>
+            </div>
+        </div>
+
+        <!-- Add form -->
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <div class="admin-section-title">Thêm danh mục mới</div>
+            </div>
+            <div class="form-card">
+                <form th:action="@{/admin/categories/add}" th:object="${newCategory}" method="post"
+                      class="d-grid" style="grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <div class="form-field mb-0">
+                        <label>Tên danh mục *</label>
+                        <input type="text" th:field="*{name}" placeholder="VD: Streaming" required />
+                    </div>
+                    <div class="form-field mb-0">
+                        <label>Mô tả</label>
+                        <input type="text" th:field="*{description}" placeholder="Mô tả ngắn..." />
+                    </div>
+                    <div class="form-field mb-0">
+                        <label>Thứ tự</label>
+                        <input type="number" th:field="*{sortOrder}" value="0" min="0" />
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="height:40px;">
+                        <i class="fa-solid fa-plus"></i> Thêm
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- List -->
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <div class="admin-section-title">Danh sách danh mục</div>
+            </div>
+            <div class="table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên</th>
+                            <th>Slug</th>
+                            <th>Trạng thái</th>
+                            <th>Thứ tự</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="cat : ${categories}">
+                            <td class="text-muted-custom font-mono" th:text="${cat.id}"></td>
+                            <td class="fw-semibold" th:text="${cat.name}"></td>
+                            <td class="font-mono text-muted-custom" style="font-size:12px;" th:text="${cat.slug}"></td>
+                            <td>
+                                <span th:if="${cat.isActive}" class="pill pill-success" style="font-size:11px;">Hiển thị</span>
+                                <span th:unless="${cat.isActive}" class="pill" style="font-size:11px;">Ẩn</span>
+                            </td>
+                            <td class="text-muted-custom" th:text="${cat.sortOrder}"></td>
+                            <td class="d-flex gap-1">
+                                <a th:href="@{/admin/categories/edit/{id}(id=${cat.id})}" class="btn btn-ghost px-2 py-1" style="font-size:12px;">Sửa</a>
+                                <a th:href="@{/admin/categories/delete/{id}(id=${cat.id})}" class="btn btn-outline text-danger-custom px-2 py-1" style="font-size:12px;border-color:var(--danger);" onclick="return confirm('Xóa danh mục này?')">Xóa</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${categories == null or categories.empty}">
+                            <td colspan="6" class="text-center text-muted-custom p-4">Chưa có danh mục nào.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 </div>
-<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+<th:block th:replace="~{admin/layout/js :: js}" />
 </body>
 </html>

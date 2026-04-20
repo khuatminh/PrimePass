@@ -1,57 +1,88 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Dashboard | Admin</title>
-    <th:block th:replace="~{admin/layout/css :: css}"></th:block>
+    <title>Dashboard — Admin PixelVault</title>
+    <th:block th:replace="~{admin/layout/css :: css}" />
 </head>
-<body class="bg-dark text-white">
-<div class="d-flex" style="min-height:100vh">
-    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
-    <div class="flex-grow-1 d-flex flex-column">
-        <div th:replace="~{admin/layout/header :: header('Dashboard')}"></div>
-        <main class="p-4">
-            <div class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <div class="card bg-secondary text-white p-3 rounded-4">
-                        <div class="small text-white-50">Tong don hang</div>
-                        <h3 class="fw-bold" th:text="${totalOrders}">0</h3>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-secondary text-white p-3 rounded-4">
-                        <div class="small text-white-50">Doanh thu (d)</div>
-                        <h3 class="fw-bold" th:text="${#numbers.formatDecimal(totalRevenue,0,'COMMA',0,'POINT')}">0</h3>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-secondary text-white p-3 rounded-4">
-                        <div class="small text-white-50">San pham</div>
-                        <h3 class="fw-bold" th:text="${totalProducts}">0</h3>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-secondary text-white p-3 rounded-4">
-                        <div class="small text-white-50">Nguoi dung</div>
-                        <h3 class="fw-bold" th:text="${totalUsers}">0</h3>
-                    </div>
-                </div>
+<body>
+<div class="admin-shell">
+    <th:block th:replace="~{admin/layout/sidebar :: sidebar(currentPage='dashboard')}" />
+    <main class="admin-main">
+        <div class="page-header">
+            <h1>Dashboard</h1>
+            <p>Tổng quan hoạt động cửa hàng</p>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi">
+                <div class="kpi-label">Tổng đơn hàng</div>
+                <div class="kpi-value" th:text="${totalOrders}">0</div>
+                <div class="kpi-sub">Tất cả trạng thái</div>
             </div>
-            <h5 class="fw-bold mb-3">Don hang gan day</h5>
-            <table class="table table-dark table-striped">
-                <thead><tr><th>#</th><th>Khach hang</th><th>Tong tien</th><th>Trang thai</th><th></th></tr></thead>
-                <tbody>
-                    <tr th:each="order : ${recentOrders}">
-                        <td th:text="${order.id}"></td>
-                        <td th:text="${order.user.username}"></td>
-                        <td th:text="${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT') + 'd'}"></td>
-                        <td><span class="badge bg-primary" th:text="${order.status}"></span></td>
-                        <td><a th:href="@{/admin/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline-light">Xem</a></td>
-                    </tr>
-                </tbody>
-            </table>
-        </main>
-    </div>
+            <div class="kpi">
+                <div class="kpi-label">Doanh thu</div>
+                <div class="kpi-value" th:text="'₫' + ${#numbers.formatDecimal(totalRevenue,0,'COMMA',0,'POINT')}">₫0</div>
+                <div class="kpi-sub">Đơn hoàn thành</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Sản phẩm</div>
+                <div class="kpi-value" th:text="${totalProducts}">0</div>
+                <div class="kpi-sub">Đang hoạt động</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Người dùng</div>
+                <div class="kpi-value" th:text="${totalUsers}">0</div>
+                <div class="kpi-sub">Đã đăng ký</div>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <div class="admin-section-title">Đơn hàng gần đây</div>
+                <a th:href="@{/admin/orders}" class="btn btn-ghost" style="font-size:13px;">Xem tất cả</a>
+            </div>
+            <div class="table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Khách hàng</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày đặt</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${recentOrders}">
+                            <td class="font-mono text-muted-custom" th:text="'#' + ${order.id}"></td>
+                            <td th:text="${order.user.username}"></td>
+                            <td class="font-mono fw-semibold"
+                                th:text="'₫' + ${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT')}">₫0</td>
+                            <td>
+                                <th:block th:switch="${order.status.name()}">
+                                    <span th:case="'pending'" class="pill pill-warning" style="font-size:11px;">Chờ xử lý</span>
+                                    <span th:case="'processing'" class="pill pill-accent" style="font-size:11px;">Đang xử lý</span>
+                                    <span th:case="'completed'" class="pill pill-success" style="font-size:11px;">Hoàn thành</span>
+                                    <span th:case="'cancelled'" class="pill pill-danger" style="font-size:11px;">Đã hủy</span>
+                                    <span th:case="*" class="pill" style="font-size:11px;" th:text="${order.status}">-</span>
+                                </th:block>
+                            </td>
+                            <td class="text-muted-custom" style="font-size:13px;"
+                                th:text="${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}"></td>
+                            <td>
+                                <a th:href="@{/admin/orders/{id}(id=${order.id})}" class="btn btn-ghost px-2 py-1" style="font-size:12px;">Xem</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${recentOrders == null or recentOrders.empty}">
+                            <td colspan="6" class="text-center text-muted-custom p-4">Chưa có đơn hàng nào.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 </div>
-<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+<th:block th:replace="~{admin/layout/js :: js}" />
 </body>
 </html>
