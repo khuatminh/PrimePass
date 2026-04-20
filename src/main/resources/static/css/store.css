@@ -437,3 +437,8 @@
 .empty-state { grid-column: 1/-1; text-align: center; padding: 80px 0; color: var(--text-muted); }
 .empty-state i { font-size: 56px; margin-bottom: 20px; display: block; }
 @media(max-width:900px){ .mp-body{grid-template-columns:1fr;} .filter-panel{position:static;} .mp-body .prod-grid{grid-template-columns:repeat(2,1fr);} }
+
+/* --- User dropdown --- */
+.user-dropdown { display:none; position:absolute; right:0; top:calc(100% + 8px); background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); padding:8px; min-width:180px; z-index:200; }
+.user-dropdown a:hover,
+.user-dropdown button:hover { background:var(--surface-hi) !important; }
