@@ -3,8 +3,6 @@ services:
     build: .
     container_name: marketplace-app
     restart: unless-stopped
-    ports:
-      - "8386:8386"
     environment:
       - DB_HOST=mysql
       - DB_NAME=digital_marketplace
@@ -12,7 +10,7 @@ services:
       - DB_PASS=${DB_PASSWORD:-changeme}
       - VNPAY_TMN_CODE=${VNPAY_TMN_CODE:-DEMO0001}
       - VNPAY_HASH_SECRET=${VNPAY_HASH_SECRET:-DEMOHASHDEMOHASHDEMOHASHDEMO1234}
-      - VNPAY_RETURN_URL=${VNPAY_RETURN_URL:-http://localhost:8386/payment/callback}
+      - VNPAY_RETURN_URL=${VNPAY_RETURN_URL:-http://localhost/payment/callback}
     volumes:
       - uploads:/app/uploads
     depends_on:
@@ -31,14 +29,23 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
       - ./database/digital_marketplace.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
-    ports:
-      - "3307:3306"
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 10
+
+  nginx:
+    image: nginx:alpine
+    container_name: marketplace-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
 
 volumes:
   mysql-data:
