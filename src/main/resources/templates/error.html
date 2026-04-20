@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="'Error ' + ${statusCode}">Error</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Toto, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .error-card {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 48px 56px;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+        }
+        .status-code {
+            font-size: 80px;
+            font-weight: 700;
+            color: #e53e3e;
+            line-height: 1;
+        }
+        .error-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a202c;
+            margin: 12px 0 8px;
+        }
+        .error-message {
+            font-size: 15px;
+            color: #718096;
+            line-height: 1.6;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 32px;
+            padding: 12px 28px;
+            background: #3182ce;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .back-btn:hover { background: #2b6cb0; }
+    </style>
+</head>
+<body>
+    <div class="error-card">
+        <div class="status-code" th:text="${statusCode}">500</div>
+        <div class="error-title" th:text="${errorTitle}">Error</div>
+        <p class="error-message" th:text="${errorMessage}">
+            Something went wrong.
+        </p>
+        <a href="/" class="back-btn">Back to Home</a>
+    </div>
+</body>
+</html>
