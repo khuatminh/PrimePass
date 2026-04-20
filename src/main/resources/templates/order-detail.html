@@ -1,43 +1,144 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Chi Tiết Đơn Hàng</title>
-    <th:block th:replace="~{layout/css :: css}"></th:block>
+    <title th:text="'Đơn hàng #' + ${order.id} + ' — PixelVault'">Đơn hàng — PixelVault</title>
+    <th:block th:replace="~{layout/css :: css}" />
+    <link rel="stylesheet" th:href="@{/css/order.css}" />
 </head>
-<body class="bg-dark text-light">
-<div th:replace="~{layout/header :: header}"></div>
-<div class="container py-5">
-    <h2 class="fw-bold mb-4">Đơn Hàng #<span th:text="${order.id}"></span></h2>
-    <p>Trạng thái: <strong th:text="${order.status}"></strong></p>
-    <p>Ngày đặt: <span th:text="${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}"></span></p>
-    <p>Tổng tiền: <strong th:text="${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT') + 'đ'}"></strong></p>
-    <h5 class="mt-4">Sản phẩm đã mua</h5>
-    <div th:each="item : ${order.items}" class="card bg-secondary border-0 mb-3 p-3">
-        <div class="d-flex align-items-center gap-3">
-            <img th:src="@{${item.product.imageUrl}}" width="60" />
-            <div>
-                <strong th:text="${item.product.name}"></strong>
-                <span th:if="${item.variant != null}" th:text="' — ' + ${item.variant.variantLabel}"></span>
-                <br/>
-                <span th:text="${#numbers.formatDecimal(item.unitPrice,0,'COMMA',0,'POINT') + 'đ x ' + item.quantity}"></span>
-            </div>
-        </div>
-        <div th:if="${item.productKey != null}" class="alert alert-success mt-3">
-            <strong>Thông tin tài khoản/key của bạn:</strong><br/>
-            <span th:if="${item.productKey.keyType.name() == 'account'}">
-                Email: <code th:text="${item.productKey.accountEmail}"></code><br/>
-                Mật khẩu: <code th:text="${item.productKey.accountPassword}"></code>
-            </span>
-            <span th:if="${item.productKey.keyType.name() == 'serial_key'}">
-                Key: <code th:text="${item.productKey.serialKey}"></code>
-            </span>
-        </div>
-        <div th:if="${item.productKey == null and order.status.name() == 'completed'}" class="alert alert-warning mt-2">
-            Kho hết hàng — admin sẽ liên hệ bạn sớm.
-        </div>
+<body>
+<th:block th:replace="~{layout/header :: header}" />
+
+<div class="order-detail-page">
+  <div class="container">
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <a th:href="@{/order/history}" class="text-muted-custom text-decoration-none" style="font-size:14px;">
+        <i class="fa-solid fa-arrow-left"></i> Đơn hàng của tôi
+      </a>
+      <h1 class="font-display fw-bold mb-0" style="font-size:26px;">
+        Đơn hàng <span class="text-accent" th:text="'#' + ${order.id}"></span>
+      </h1>
+      <th:block th:switch="${order.status.name()}">
+        <span th:case="'pending'" class="pill pill-warning ms-auto">Chờ xử lý</span>
+        <span th:case="'processing'" class="pill pill-accent ms-auto">Đang xử lý</span>
+        <span th:case="'completed'" class="pill pill-success ms-auto">Hoàn thành</span>
+        <span th:case="'cancelled'" class="pill pill-danger ms-auto">Đã hủy</span>
+        <span th:case="*" class="pill ms-auto" th:text="${order.status}">-</span>
+      </th:block>
     </div>
+
+    <div class="order-detail-layout">
+      <div>
+        <!-- Order meta -->
+        <div class="order-meta-card">
+          <div class="meta-grid">
+            <div class="meta-item">
+              <label>Mã đơn</label>
+              <div class="value font-mono" th:text="'#' + ${order.id}"></div>
+            </div>
+            <div class="meta-item">
+              <label>Ngày đặt</label>
+              <div class="value" th:text="${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}"></div>
+            </div>
+            <div class="meta-item">
+              <label>Phương thức</label>
+              <div class="value">VNPay</div>
+            </div>
+            <div class="meta-item">
+              <label>Trạng thái</label>
+              <div class="value" th:text="${order.status}"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Items -->
+        <div class="items-card">
+          <div class="items-card-header">Sản phẩm đã mua (<span th:text="${order.items.size()}">0</span>)</div>
+          <div th:each="item : ${order.items}" class="order-item">
+            <div class="order-item-row">
+              <div class="order-item-thumb"
+                   th:text="${#strings.toUpperCase(#strings.substring(item.product.name, 0, T(java.lang.Math).min(2, item.product.name.length())))}">PV</div>
+              <div>
+                <div class="order-item-name" th:text="${item.product.name}">Product</div>
+                <div class="order-item-variant" th:if="${item.variant != null}" th:text="${item.variant.variantLabel}"></div>
+              </div>
+              <div class="order-item-price"
+                   th:text="'₫' + ${#numbers.formatDecimal(item.unitPrice,0,'COMMA',0,'POINT')} + ' × ' + ${item.quantity}">₫0 × 1</div>
+            </div>
+
+            <!-- Key delivery -->
+            <div class="key-card" th:if="${item.productKey != null}">
+              <div class="key-card-title"><i class="fa-solid fa-key"></i> Thông tin tài khoản / key của bạn</div>
+              <th:block th:if="${item.productKey.keyType.name() == 'account'}">
+                <div class="key-field">
+                  <label>Email</label>
+                  <div class="key-value">
+                    <code th:text="${item.productKey.accountEmail}"></code>
+                    <button class="key-copy" onclick="copyText(this.previousElementSibling.textContent)" title="Sao chép"><i class="fa-solid fa-copy"></i></button>
+                  </div>
+                </div>
+                <div class="key-field">
+                  <label>Mật khẩu</label>
+                  <div class="key-value">
+                    <code th:text="${item.productKey.accountPassword}"></code>
+                    <button class="key-copy" onclick="copyText(this.previousElementSibling.textContent)" title="Sao chép"><i class="fa-solid fa-copy"></i></button>
+                  </div>
+                </div>
+              </th:block>
+              <th:block th:if="${item.productKey.keyType.name() == 'serial_key'}">
+                <div class="key-field">
+                  <label>Serial Key</label>
+                  <div class="key-value">
+                    <code th:text="${item.productKey.serialKey}"></code>
+                    <button class="key-copy" onclick="copyText(this.previousElementSibling.textContent)" title="Sao chép"><i class="fa-solid fa-copy"></i></button>
+                  </div>
+                </div>
+              </th:block>
+            </div>
+
+            <div class="out-of-stock"
+                 th:if="${item.productKey == null and order.status.name() == 'completed'}">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              Kho tạm hết hàng — Admin sẽ liên hệ bạn trong thời gian sớm nhất.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary sidebar -->
+      <div class="summary-card">
+        <h3 class="font-display mb-3" style="font-size:17px;">Tổng đơn hàng</h3>
+        <div class="summary-row">
+          <span>Tạm tính</span>
+          <span th:text="'₫' + ${#numbers.formatDecimal(order.totalAmount,0,'COMMA',0,'POINT')}">₫0</span>
+        </div>
+        <div class="summary-row" th:if="${order.discountAmount != null and order.discountAmount > 0}">
+          <span>Giảm giá</span>
+          <span class="text-success-custom" th:text="'-₫' + ${#numbers.formatDecimal(order.discountAmount,0,'COMMA',0,'POINT')}">-₫0</span>
+        </div>
+        <div class="summary-total-row">
+          <span>Tổng cộng</span>
+          <span class="amount" th:text="'₫' + ${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT')}">₫0</span>
+        </div>
+        <a th:href="@{/marketplace}" class="btn btn-ghost w-100 justify-content-center mt-4" style="font-size:13.5px;">
+          Tiếp tục mua sắm
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
-<div th:replace="~{layout/footer :: footer}"></div>
-<th:block th:replace="~{layout/js :: js}"></th:block>
+
+<th:block th:replace="~{layout/footer :: footer}" />
+<th:block th:replace="~{layout/js :: js}" />
+<script>
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const tip = document.createElement('div');
+    tip.textContent = 'Đã sao chép!';
+    tip.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--accent);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:9999;';
+    document.body.appendChild(tip);
+    setTimeout(() => tip.remove(), 2000);
+  });
+}
+</script>
 </body>
 </html>

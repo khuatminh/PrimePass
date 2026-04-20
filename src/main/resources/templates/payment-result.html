@@ -1,26 +1,50 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" data-bs-theme="dark">
 <head>
-    <title>Kết Quả Thanh Toán</title>
-    <th:block th:replace="~{layout/css :: css}"></th:block>
+    <title>Kết quả thanh toán — PixelVault</title>
+    <th:block th:replace="~{layout/css :: css}" />
+    <link rel="stylesheet" th:href="@{/css/order.css}" />
 </head>
-<body class="bg-dark text-light">
-<div th:replace="~{layout/header :: header}"></div>
-<div class="container py-5 text-center">
-    <div th:if="${success}">
-        <div class="display-1 text-success mb-3">✓</div>
-        <h2 class="text-success fw-bold">Thanh toán thành công!</h2>
-        <p>Đơn hàng #<strong th:text="${order.id}"></strong> đã được xử lý.</p>
-        <a th:href="@{/order/{id}(id=${order.id})}" class="btn btn-primary mt-3">Xem chi tiết & nhận key/tài khoản</a>
+<body>
+<th:block th:replace="~{layout/header :: header}" />
+
+<div class="result-page">
+  <div class="container d-flex justify-content-center">
+    <!-- Success -->
+    <div class="result-card" th:if="${success}">
+      <div class="result-icon success"><i class="fa-solid fa-check"></i></div>
+      <h2 class="text-success-custom">Thanh toán thành công!</h2>
+      <p>Đơn hàng của bạn đã được xử lý.</p>
+      <div class="order-ref" th:text="'Đơn #' + ${order.id}">Đơn #0</div>
+      <p style="font-size:13.5px;">Tài khoản / key của bạn đã sẵn sàng để nhận trong trang chi tiết đơn hàng.</p>
+      <div class="result-actions">
+        <a th:href="@{/order/{id}(id=${order.id})}" class="btn btn-primary btn-lg justify-content-center">
+          <i class="fa-solid fa-key"></i> Xem chi tiết &amp; nhận key
+        </a>
+        <a th:href="@{/marketplace}" class="btn btn-ghost justify-content-center">
+          Tiếp tục mua sắm
+        </a>
+      </div>
     </div>
-    <div th:unless="${success}">
-        <div class="display-1 text-danger mb-3">✗</div>
-        <h2 class="text-danger fw-bold">Thanh toán thất bại</h2>
-        <p th:text="${errorMessage}"></p>
-        <a th:href="@{/cart}" class="btn btn-outline-primary mt-3">Quay lại giỏ hàng</a>
+
+    <!-- Failure -->
+    <div class="result-card" th:unless="${success}">
+      <div class="result-icon failure"><i class="fa-solid fa-xmark"></i></div>
+      <h2 class="text-danger-custom">Thanh toán thất bại</h2>
+      <p th:text="${errorMessage ?: 'Giao dịch không thành công. Vui lòng thử lại.'}"></p>
+      <div class="result-actions">
+        <a th:href="@{/cart}" class="btn btn-primary btn-lg justify-content-center">
+          <i class="fa-solid fa-arrow-left"></i> Quay lại giỏ hàng
+        </a>
+        <a th:href="@{/}" class="btn btn-ghost justify-content-center">
+          Về trang chủ
+        </a>
+      </div>
     </div>
+  </div>
 </div>
-<div th:replace="~{layout/footer :: footer}"></div>
-<th:block th:replace="~{layout/js :: js}"></th:block>
+
+<th:block th:replace="~{layout/footer :: footer}" />
+<th:block th:replace="~{layout/js :: js}" />
 </body>
 </html>

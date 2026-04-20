@@ -1,0 +1,61 @@
+/* ============================================
+   PixelVault — Order styles
+   order-history + order-detail + payment-result
+   ============================================ */
+
+/* --- Order history --- */
+.orders-page { padding: 48px 0 80px; }
+.orders-page h1 { font-family: var(--font-display); font-size: 30px; font-weight: 700; margin-bottom: 28px; }
+.orders-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+.orders-table { width: 100%; border-collapse: collapse; }
+.orders-table th { padding: 12px 18px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); border-bottom: 1px solid var(--line); }
+.orders-table td { padding: 14px 18px; font-size: 13.5px; border-bottom: 1px solid var(--line); color: var(--text); vertical-align: middle; }
+.orders-table tr:last-child td { border-bottom: none; }
+.orders-table tr:hover td { background: var(--surface-hi); }
+.order-id { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); }
+.empty-state { text-align: center; padding: 80px 0; color: var(--text-muted); }
+.empty-state i { font-size: 48px; margin-bottom: 16px; display: block; }
+
+/* --- Order detail --- */
+.order-detail-page { padding: 48px 0 80px; }
+.order-detail-layout { display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+.order-meta-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 24px; margin-bottom: 24px; }
+.order-meta-card h3 { font-family: var(--font-display); font-size: 22px; margin-bottom: 16px; }
+.meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.meta-item label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); display: block; margin-bottom: 4px; }
+.meta-item .value { font-size: 14px; color: var(--text); }
+.items-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+.items-card-header { padding: 16px 20px; border-bottom: 1px solid var(--line); font-weight: 600; font-size: 15px; }
+.order-item { padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.order-item:last-child { border-bottom: none; }
+.order-item-row { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
+.order-item-thumb { width: 48px; height: 48px; border-radius: var(--r-sm); background: linear-gradient(135deg,#111318,#1C2028); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 16px; color: rgba(255,255,255,0.4); flex-shrink: 0; }
+.order-item-name { font-weight: 600; font-size: 14.5px; margin-bottom: 3px; }
+.order-item-variant { font-size: 12.5px; color: var(--text-muted); font-family: var(--font-mono); }
+.order-item-price { margin-left: auto; font-family: var(--font-mono); font-size: 14px; white-space: nowrap; }
+.key-card { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); border-radius: var(--r-md); padding: 16px; }
+.key-card-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--success); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.key-field { margin-bottom: 10px; }
+.key-field label { font-size: 12px; color: var(--text-dim); display: block; margin-bottom: 4px; }
+.key-value { display: flex; align-items: center; gap: 8px; }
+.key-value code { flex: 1; font-family: var(--font-mono); font-size: 14px; color: var(--text); background: var(--bg-2); padding: 8px 12px; border-radius: var(--r-xs); border: 1px solid var(--line); word-break: break-all; }
+.key-copy { width: 32px; height: 32px; border-radius: var(--r-xs); background: var(--accent-soft); color: var(--accent); border: none; cursor: pointer; display: grid; place-items: center; flex-shrink: 0; font-size: 12px; transition: background .15s; }
+.key-copy:hover { background: var(--accent); color: #fff; }
+.out-of-stock { background: rgba(245,181,68,0.08); border: 1px solid rgba(245,181,68,0.2); border-radius: var(--r-md); padding: 14px 16px; font-size: 13.5px; color: var(--warning); }
+.summary-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 24px; }
+.summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; border-bottom: 1px solid var(--line); color: var(--text-muted); }
+.summary-row:last-of-type { border-bottom: none; }
+.summary-total-row { display: flex; justify-content: space-between; padding: 14px 0 0; font-family: var(--font-display); font-weight: 700; font-size: 20px; }
+.summary-total-row .amount { color: var(--accent); }
+@media(max-width:900px){ .order-detail-layout{grid-template-columns:1fr;} .meta-grid{grid-template-columns:1fr;} }
+
+/* --- Payment result --- */
+.result-page { min-height: 70vh; display: flex; align-items: center; justify-content: center; padding: 60px 0; }
+.result-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-xl); padding: 48px; text-align: center; max-width: 520px; width: 100%; }
+.result-icon { width: 80px; height: 80px; border-radius: 50%; display: grid; place-items: center; font-size: 36px; margin: 0 auto 24px; }
+.result-icon.success { background: rgba(74,222,128,0.12); color: var(--success); border: 2px solid rgba(74,222,128,0.3); }
+.result-icon.failure { background: rgba(240,107,126,0.12); color: var(--danger); border: 2px solid rgba(240,107,126,0.3); }
+.result-card h2 { font-family: var(--font-display); font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+.result-card p { color: var(--text-muted); font-size: 15px; line-height: 1.6; margin-bottom: 8px; }
+.result-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 28px; }
+.order-ref { display: inline-block; padding: 6px 14px; background: var(--accent-soft); border: 1px solid rgba(139,124,246,0.3); border-radius: var(--r-sm); font-family: var(--font-mono); font-size: 13px; color: var(--accent); margin: 8px 0; }
