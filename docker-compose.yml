@@ -33,6 +33,7 @@ services:
       - ./database/digital_marketplace.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     ports:
       - "3307:3306"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s

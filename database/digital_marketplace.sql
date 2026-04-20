@@ -90,7 +90,33 @@ CREATE TABLE product_keys (
 ) ENGINE=InnoDB;
 
 -- =============================================
--- 5. COUPONS (Mã giảm giá đơn giản)
+-- 5. PRODUCT_VARIANT_TYPES (Loại biến thể sản phẩm)
+-- =============================================
+CREATE TABLE product_variant_types (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    product_id      INT             NOT NULL,
+    name            VARCHAR(100)    NOT NULL,
+    sort_order      INT             NOT NULL DEFAULT 0,
+
+    INDEX idx_pvt_product (product_id),
+    CONSTRAINT fk_pvt_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =============================================
+-- 6. PRODUCT_VARIANT_VALUES (Giá trị biến thể)
+-- =============================================
+CREATE TABLE product_variant_values (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    variant_type_id INT             NOT NULL,
+    name            VARCHAR(100)    NOT NULL,
+    sort_order      INT             NOT NULL DEFAULT 0,
+
+    INDEX idx_pvv_type (variant_type_id),
+    CONSTRAINT fk_pvv_type FOREIGN KEY (variant_type_id) REFERENCES product_variant_types(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =============================================
+-- 7. COUPONS (Mã giảm giá đơn giản)
 -- =============================================
 CREATE TABLE coupons (
     id              INT AUTO_INCREMENT PRIMARY KEY,
