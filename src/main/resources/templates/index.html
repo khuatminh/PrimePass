@@ -263,9 +263,9 @@
       <th:block th:if="${featuredProducts != null and !featuredProducts.empty}">
         <article th:each="product : ${featuredProducts}" class="product-card">
           <a th:href="@{/product/{slug}(slug=${product.slug})}" class="text-reset text-decoration-none" style="display:contents;">
-            <div class="product-thumb" th:style="'background: linear-gradient(135deg, #111318 0%, #1C2028 100%);'"
-                 style="display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:36px;color:rgba(255,255,255,0.5);">
-              <span th:text="${#strings.toUpperCase(#strings.substring(product.name, 0, T(java.lang.Math).min(2, product.name.length())))}">PV</span>
+            <div class="product-thumb">
+              <img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" th:alt="${product.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+              <span th:if="${product.imageUrl == null}" th:text="${#strings.toUpperCase(#strings.substring(product.name, 0, T(java.lang.Math).min(2, product.name.length())))}">PV</span>
               <div class="product-badges">
                 <span class="badge-disc" th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
                       th:text="'-' + ${#numbers.formatDecimal((1 - product.salePrice / product.originalPrice) * 100, 0, 0)} + '%'">-30%</span>

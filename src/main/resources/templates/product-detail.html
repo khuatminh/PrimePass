@@ -26,13 +26,14 @@
     <!-- Gallery -->
     <div class="pd-gallery">
       <div class="pd-hero-img">
+        <img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" th:alt="${product.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;">
         <div class="pd-badges">
           <span class="pill pill-success" th:if="${product.isFeatured}"><i class="fa-solid fa-fire"></i> HOT</span>
           <span class="pill pill-accent"
                 th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
                 th:text="'-' + ${#numbers.formatDecimal((1 - product.salePrice / product.originalPrice) * 100, 0, 0)} + '%'">-30%</span>
         </div>
-        <span th:text="${#strings.toUpperCase(#strings.substring(product.name, 0, T(java.lang.Math).min(2, product.name.length())))}">PV</span>
+        <span th:if="${product.imageUrl == null}" th:text="${#strings.toUpperCase(#strings.substring(product.name, 0, T(java.lang.Math).min(2, product.name.length())))}">PV</span>
       </div>
 
       <div class="trust-strip">

@@ -78,9 +78,9 @@
         <th:block th:if="${products != null and !products.empty}">
           <article th:each="product : ${products}" class="product-card">
             <a th:href="@{/product/{slug}(slug=${product.slug})}" class="text-reset text-decoration-none" style="display:contents;">
-              <div class="product-thumb"
-                   style="display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:40px;color:rgba(255,255,255,0.4);">
-                <span th:text="${#strings.toUpperCase(#strings.substring(product.name, 0, T(java.lang.Math).min(2, product.name.length())))}">PV</span>
+              <div class="product-thumb">
+                <img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" th:alt="${product.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+                <span th:if="${product.imageUrl == null}" th:text="${#strings.toUpperCase(#strings.substring(product.name, 0, T(java.lang.Math).min(2, product.name.length())))}">PV</span>
                 <div class="product-badges">
                   <span class="badge-hot" th:if="${product.isFeatured}"><i class="fa-solid fa-fire"></i> HOT</span>
                   <span class="badge-disc"

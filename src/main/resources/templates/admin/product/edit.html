@@ -57,6 +57,9 @@
                 </div>
                 <div class="form-field">
                     <label>Ảnh mới (để trống nếu giữ nguyên)</label>
+                    <div th:if="${product.imageUrl != null}" class="mb-2">
+                        <img th:src="${product.imageUrl}" th:alt="${product.name}" style="max-height:120px;border-radius:var(--r-sm);border:1px solid var(--line);">
+                    </div>
                     <input type="file" name="imageFile" accept="image/*" />
                 </div>
                 <div class="d-flex gap-3 mb-4">
