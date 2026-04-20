@@ -156,7 +156,10 @@
            th:href="@{/marketplace(categoryId=${cat.id})}"
            class="cat-card">
           <div class="cat-arrow"><i class="fa-solid fa-arrow-up"></i></div>
-          <div class="cat-icon"><i class="fa-solid fa-box"></i></div>
+          <div class="cat-icon">
+            <img th:if="${cat.iconUrl != null}" th:src="${cat.iconUrl}" th:alt="${cat.name}" style="width:36px;height:36px;object-fit:contain;">
+            <i th:if="${cat.iconUrl == null}" class="fa-solid fa-box"></i>
+          </div>
           <div>
             <div class="cat-name" th:text="${cat.name}">Category</div>
             <div class="cat-count" th:text="${cat.description ?: 'Xem tất cả sản phẩm'}">Xem tất cả</div>
