@@ -1,70 +1,428 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>DevPro Marketplace — Home</title>
+    <title>PixelVault — Cửa hàng sản phẩm số #1 Việt Nam</title>
     <th:block th:replace="~{layout/css :: css}" />
 </head>
-<body class="bg-dark text-light">
+<body>
 <th:block th:replace="~{layout/header :: header}" />
 
-<section class="hero-section py-5 text-center">
-    <div class="container">
-        <h1 class="display-4 fw-bold mb-3">Premium Digital Accounts</h1>
-        <p class="lead text-muted mb-4">Streaming · Software · Gaming · Social · and more</p>
-        <a th:href="@{/marketplace}" class="btn btn-primary btn-lg me-2">
-            <i class="bi bi-grid me-1"></i> Browse Marketplace
-        </a>
-        <a th:href="@{/auth/register}" class="btn btn-outline-light btn-lg" sec:authorize="!isAuthenticated()">
-            Sign Up Free
-        </a>
-    </div>
-</section>
-
-<section class="py-5">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold mb-0">Featured Products</h2>
-            <a th:href="@{/marketplace}" class="btn btn-outline-primary btn-sm">View All <i class="bi bi-arrow-right ms-1"></i></a>
-        </div>
-        <div class="text-center text-muted py-5" th:if="${featuredProducts == null or featuredProducts.empty}">
-            <i class="bi bi-box-seam fs-1"></i>
-            <p class="mt-2">No featured products yet.</p>
-        </div>
-        <div class="row row-cols-1 row-cols-md-3 g-4" th:unless="${featuredProducts == null or featuredProducts.empty}">
-            <div class="col" th:each="product : ${featuredProducts}">
-                <div class="card h-100 bg-secondary border-0 shadow">
-                    <div class="position-relative">
-                        <img th:src="@{${product.imageUrl}}" class="card-img-top" style="height:200px; object-fit:cover;" th:alt="${product.name}" />
-                        <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">Featured</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <span class="badge bg-primary mb-2 align-self-start" th:if="${product.category != null}" th:text="${product.category.name}">Category</span>
-                        <h5 class="card-title fw-bold" th:text="${product.name}">Product Name</h5>
-                        <div class="mb-3">
-                            <span class="text-decoration-line-through text-muted me-2"
-                                  th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
-                                  th:text="'₫' + ${#numbers.formatDecimal(product.originalPrice, 0, 'COMMA', 0, 'POINT')}"></span>
-                            <span class="fw-bold text-primary fs-5"
-                                  th:text="'₫' + ${#numbers.formatDecimal(product.salePrice, 0, 'COMMA', 0, 'POINT')}"></span>
-                        </div>
-                        <a th:href="@{/product/{slug}(slug=${product.slug})}" class="btn btn-primary mt-auto">View Details</a>
-                    </div>
-                </div>
+<!-- HERO CAROUSEL -->
+<section class="hero-carousel">
+  <div class="container">
+    <div class="carousel-wrap">
+      <div class="carousel-track" id="carouselTrack">
+        <!-- Slide 1 — Netflix -->
+        <div class="slide" style="background:linear-gradient(100deg,#0a0000 0%,#2a0000 40%,#8B0000 100%)">
+          <div class="slide-inner">
+            <div class="slide-left">
+              <div class="slide-eyebrow"><span class="live-dot"></span> ĐANG GIẢM · Còn 02:14:38</div>
+              <h1>Netflix Premium 4K.<br><span class="slide-accent">Xem bao nhiêu cũng được.</span></h1>
+              <p>Tài khoản chính hãng, 4 thiết bị, hỗ trợ Ultra HD. Kích hoạt tự động trong vòng 30 giây kể từ khi thanh toán.</p>
+              <div class="slide-price"><span class="old">169.000₫</span><span class="new">89.000₫</span><span class="per">/ tháng</span></div>
+              <div class="slide-cta">
+                <a th:href="@{/marketplace}" class="btn btn-primary">Mua ngay <i class="fa-solid fa-arrow-right"></i></a>
+                <a th:href="@{/marketplace}" class="btn-ghost-light">Xem chi tiết</a>
+              </div>
+              <div class="slide-meta">
+                <span><i class="fa-solid fa-star"></i> 4.9 · 2.4k đánh giá</span>
+                <span><i class="fa-solid fa-shield-halved"></i> Bảo hành trọn gói</span>
+                <span><i class="fa-solid fa-bolt"></i> Giao tự động</span>
+              </div>
             </div>
+            <div class="slide-right">
+              <div class="slide-poster" style="background:linear-gradient(135deg,#1a0000,#E50914)">
+                <div class="poster-logo">StreamFlix</div>
+                <div class="poster-tag">PREMIUM · 4K</div>
+              </div>
+            </div>
+          </div>
         </div>
+        <!-- Slide 2 — ChatGPT -->
+        <div class="slide" style="background:linear-gradient(100deg,#041414 0%,#062a26 40%,#0a5c4c 100%)">
+          <div class="slide-inner">
+            <div class="slide-left">
+              <div class="slide-eyebrow"><span class="live-dot"></span> BÁN CHẠY · Top 1 AI Tool</div>
+              <h1>ChatGPT Plus.<br><span class="slide-accent">Trợ lý AI cho dân chuyên.</span></h1>
+              <p>GPT-4o, DALL·E, Code Interpreter. Không giới hạn lượt hỏi, ưu tiên giờ cao điểm.</p>
+              <div class="slide-price"><span class="old">499.000₫</span><span class="new">299.000₫</span><span class="per">/ tháng</span></div>
+              <div class="slide-cta">
+                <a th:href="@{/marketplace}" class="btn btn-primary">Mua ngay <i class="fa-solid fa-arrow-right"></i></a>
+                <a th:href="@{/marketplace}" class="btn-ghost-light">Xem loại khác</a>
+              </div>
+              <div class="slide-meta">
+                <span><i class="fa-solid fa-star"></i> 5.0 · 1.8k đánh giá</span>
+                <span><i class="fa-solid fa-robot"></i> GPT-4o không giới hạn</span>
+                <span><i class="fa-solid fa-bolt"></i> Giao 30s</span>
+              </div>
+            </div>
+            <div class="slide-right">
+              <div class="slide-poster" style="background:linear-gradient(135deg,#0a2e2a,#10a37f)">
+                <div class="poster-logo" style="font-size:80px">◎</div>
+                <div class="poster-tag">PLUS · GPT-4o</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 3 — Steam -->
+        <div class="slide" style="background:linear-gradient(100deg,#050b14 0%,#0c1a2e 40%,#1b3a5c 100%)">
+          <div class="slide-inner">
+            <div class="slide-left">
+              <div class="slide-eyebrow"><span class="live-dot"></span> MỚI CẬP NHẬT · 320+ tựa game</div>
+              <h1>Steam Keys Global.<br><span class="slide-accent">Giá tốt, giao ngay trong app.</span></h1>
+              <p>Elden Ring, Cyberpunk, Helldivers 2 — key gốc, kích hoạt một lần, chơi mãi mãi.</p>
+              <div class="slide-price"><span class="old">1.490.000₫</span><span class="new">589.000₫</span><span class="per">/ key</span></div>
+              <div class="slide-cta">
+                <a th:href="@{/marketplace}" class="btn btn-primary">Xem catalog <i class="fa-solid fa-arrow-right"></i></a>
+                <a th:href="@{/marketplace}" class="btn-ghost-light">Key đang hot</a>
+              </div>
+              <div class="slide-meta">
+                <span><i class="fa-solid fa-star"></i> 4.8 · 920 đánh giá</span>
+                <span><i class="fa-solid fa-globe"></i> Activate toàn cầu</span>
+                <span><i class="fa-solid fa-infinity"></i> Vĩnh viễn</span>
+              </div>
+            </div>
+            <div class="slide-right">
+              <div class="slide-poster" style="background:linear-gradient(135deg,#0a1628,#66c0f4)">
+                <div class="poster-logo">STM</div>
+                <div class="poster-tag">KEY · GLOBAL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="carousel-arrow prev" id="prevSlide"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="carousel-arrow next" id="nextSlide"><i class="fa-solid fa-chevron-right"></i></button>
+
+      <div class="carousel-dots" id="carouselDots">
+        <button class="dot active" data-i="0"><span class="dot-bar"><span class="dot-fill"></span></span><span class="dot-lab">Netflix Premium</span></button>
+        <button class="dot" data-i="1"><span class="dot-bar"><span class="dot-fill"></span></span><span class="dot-lab">ChatGPT Plus</span></button>
+        <button class="dot" data-i="2"><span class="dot-bar"><span class="dot-fill"></span></span><span class="dot-lab">Steam Keys</span></button>
+      </div>
     </div>
+
+    <div class="hero-trust-row">
+      <div><strong>42K+</strong><span>Khách đã mua</span></div>
+      <div><strong>4.9<i class="fa-solid fa-star"></i></strong><span>12K đánh giá</span></div>
+      <div><strong>30s</strong><span>Giao tự động 24/7</span></div>
+      <div><strong>320+</strong><span>Sản phẩm có sẵn</span></div>
+    </div>
+  </div>
 </section>
 
-<section class="py-4 bg-secondary bg-opacity-25" th:if="${categories != null and !categories.empty}">
-    <div class="container text-center">
-        <h4 class="fw-bold mb-3">Shop by Category</h4>
-        <div class="d-flex flex-wrap justify-content-center gap-2">
-            <a th:each="cat : ${categories}" th:href="@{/marketplace(categoryId=${cat.id})}" th:text="${cat.name}" class="btn btn-outline-light btn-sm">Category</a>
-        </div>
+<!-- BRAND STRIP -->
+<div class="brand-strip">
+  <div class="container">
+    <div class="strip-inner">
+      <div class="strip-label">Đối tác &amp; thương hiệu phân phối</div>
+      <div class="strip-logos">
+        <div class="strip-logo"><i class="fa-solid fa-film"></i> StreamFlix</div>
+        <div class="strip-logo"><i class="fa-solid fa-music"></i> SoundPass</div>
+        <div class="strip-logo"><i class="fa-brands fa-youtube"></i> YT Premium</div>
+        <div class="strip-logo"><i class="fa-solid fa-gamepad"></i> Steam</div>
+        <div class="strip-logo"><i class="fa-solid fa-robot"></i> ChatGPT</div>
+        <div class="strip-logo"><i class="fa-solid fa-palette"></i> Canva Pro</div>
+        <div class="strip-logo"><i class="fa-solid fa-shield"></i> NordVPN</div>
+        <div class="strip-logo"><i class="fa-brands fa-xbox"></i> Xbox</div>
+        <div class="strip-logo"><i class="fa-brands fa-playstation"></i> PS Plus</div>
+        <div class="strip-logo"><i class="fa-solid fa-film"></i> StreamFlix</div>
+        <div class="strip-logo"><i class="fa-solid fa-music"></i> SoundPass</div>
+        <div class="strip-logo"><i class="fa-brands fa-youtube"></i> YT Premium</div>
+        <div class="strip-logo"><i class="fa-solid fa-gamepad"></i> Steam</div>
+        <div class="strip-logo"><i class="fa-solid fa-robot"></i> ChatGPT</div>
+        <div class="strip-logo"><i class="fa-solid fa-palette"></i> Canva Pro</div>
+        <div class="strip-logo"><i class="fa-solid fa-shield"></i> NordVPN</div>
+        <div class="strip-logo"><i class="fa-brands fa-xbox"></i> Xbox</div>
+        <div class="strip-logo"><i class="fa-brands fa-playstation"></i> PS Plus</div>
+      </div>
     </div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Danh Mục Sản Phẩm</div>
+        <h2>Mọi thứ bạn cần, trong một nơi.</h2>
+      </div>
+      <a th:href="@{/marketplace}" class="btn btn-ghost">Xem tất cả <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="cat-grid">
+      <th:block th:if="${categories != null and !categories.empty}">
+        <a th:each="cat : ${categories}"
+           th:href="@{/marketplace(categoryId=${cat.id})}"
+           class="cat-card">
+          <div class="cat-arrow"><i class="fa-solid fa-arrow-up"></i></div>
+          <div class="cat-icon"><i class="fa-solid fa-box"></i></div>
+          <div>
+            <div class="cat-name" th:text="${cat.name}">Category</div>
+            <div class="cat-count" th:text="${cat.description ?: 'Xem tất cả sản phẩm'}">Xem tất cả</div>
+          </div>
+        </a>
+      </th:block>
+      <th:block th:if="${categories == null or categories.empty}">
+        <a th:href="@{/marketplace}" class="cat-card" style="--cat-color:#E50914">
+          <div class="cat-arrow"><i class="fa-solid fa-arrow-up"></i></div>
+          <div class="cat-icon"><i class="fa-solid fa-film"></i></div>
+          <div><div class="cat-name">Streaming</div><div class="cat-count">Netflix · Disney+ · HBO · YT</div></div>
+        </a>
+        <a th:href="@{/marketplace}" class="cat-card" style="--cat-color:#1ed760">
+          <div class="cat-arrow"><i class="fa-solid fa-arrow-up"></i></div>
+          <div class="cat-icon"><i class="fa-solid fa-music"></i></div>
+          <div><div class="cat-name">Nhạc số</div><div class="cat-count">Spotify · Apple Music</div></div>
+        </a>
+        <a th:href="@{/marketplace}" class="cat-card" style="--cat-color:#66c0f4">
+          <div class="cat-arrow"><i class="fa-solid fa-arrow-up"></i></div>
+          <div class="cat-icon"><i class="fa-solid fa-gamepad"></i></div>
+          <div><div class="cat-name">Game Keys</div><div class="cat-count">Steam · Epic · Xbox · PS5</div></div>
+        </a>
+        <a th:href="@{/marketplace}" class="cat-card" style="--cat-color:#10a37f">
+          <div class="cat-arrow"><i class="fa-solid fa-arrow-up"></i></div>
+          <div class="cat-icon"><i class="fa-solid fa-robot"></i></div>
+          <div><div class="cat-name">AI &amp; Productivity</div><div class="cat-count">ChatGPT · Canva · Adobe</div></div>
+        </a>
+      </th:block>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED FLASH SALE -->
+<section class="section" style="padding-top:0" id="deals">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow" style="color:#FF5C7C">⚡ FLASH SALE · KẾT THÚC SAU</div>
+        <h2>Giảm đến <span class="text-accent">-52%</span> cuối tuần này.</h2>
+      </div>
+      <div class="right-actions">
+        <div class="featured-countdown">
+          <div class="countdown-box"><div class="countdown-val" id="cd-h">23</div><div class="countdown-lab">Giờ</div></div>
+          <div class="countdown-box"><div class="countdown-val" id="cd-m">47</div><div class="countdown-lab">Phút</div></div>
+          <div class="countdown-box"><div class="countdown-val" id="cd-s">12</div><div class="countdown-lab">Giây</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="featured-grid">
+      <div class="featured-main">
+        <div class="featured-top">
+          <div class="pill pill-danger" style="background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.25)"><i class="fa-solid fa-fire"></i> HOT DEAL</div>
+          <div class="font-mono" style="font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:0.1em">NETFLIX · 4K ULTRA HD</div>
+        </div>
+        <div>
+          <h2>Netflix Premium 4K <strong>giá chỉ 89K</strong></h2>
+          <p>Gói 1 tháng chính hãng, xem trên mọi thiết bị, 4 profile, 4K Ultra HD. Kích hoạt tự động trong 30 giây.</p>
+          <div class="featured-cta">
+            <a th:href="@{/marketplace}" class="btn btn-primary btn-lg">Mua ngay — 89.000₫ <i class="fa-solid fa-arrow-right"></i></a>
+            <a th:href="@{/marketplace}" class="btn btn-ghost btn-lg">Xem chi tiết</a>
+          </div>
+        </div>
+      </div>
+      <div class="featured-side">
+        <div class="featured-mini a">
+          <div class="bg-glyph">♪</div>
+          <div>
+            <div class="pill" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.25)">-40%</div>
+            <h3 style="margin-top:10px">Spotify Family 12 tháng</h3>
+            <p>6 tài khoản · chính hãng · bảo hành</p>
+          </div>
+          <div class="fm-foot">
+            <div class="fm-price">459.000₫</div>
+            <a th:href="@{/marketplace}" class="fm-btn"><i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+        <div class="featured-mini b">
+          <div class="bg-glyph">◎</div>
+          <div>
+            <div class="pill" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.25)">Mới</div>
+            <h3 style="margin-top:10px">ChatGPT Plus 1 tháng</h3>
+            <p>GPT-4o · DALL-E · không giới hạn</p>
+          </div>
+          <div class="fm-foot">
+            <div class="fm-price">299.000₫</div>
+            <a th:href="@{/marketplace}" class="fm-btn"><i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BEST SELLERS -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Bán Chạy Nhất</div>
+        <h2>Top sản phẩm được chọn mua tuần này.</h2>
+      </div>
+    </div>
+    <div class="prod-grid">
+      <th:block th:if="${featuredProducts != null and !featuredProducts.empty}">
+        <article th:each="product : ${featuredProducts}" class="product-card">
+          <a th:href="@{/product/{slug}(slug=${product.slug})}" class="text-reset text-decoration-none" style="display:contents;">
+            <div class="product-thumb" th:style="'background: linear-gradient(135deg, #111318 0%, #1C2028 100%);'"
+                 style="display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:36px;color:rgba(255,255,255,0.5);">
+              <span th:text="${#strings.toUpperCase(#strings.substring(product.name, 0, T(java.lang.Math).min(2, product.name.length())))}">PV</span>
+              <div class="product-badges">
+                <span class="badge-disc" th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
+                      th:text="'-' + ${#numbers.formatDecimal((1 - product.salePrice / product.originalPrice) * 100, 0, 0)} + '%'">-30%</span>
+              </div>
+            </div>
+            <div class="product-body">
+              <div class="product-meta">
+                <span class="product-cat" th:text="${product.category != null ? product.category.name : 'Digital'}">Category</span>
+              </div>
+              <h3 class="product-title" th:text="${product.name}">Product Name</h3>
+              <p class="product-desc" th:text="${product.description != null ? #strings.abbreviate(product.description, 80) : ''}"></p>
+              <div class="product-price-row">
+                <div class="price-stack">
+                  <span class="price-old"
+                        th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
+                        th:text="'₫' + ${#numbers.formatDecimal(product.originalPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                  <span class="price-new" th:text="'₫' + ${#numbers.formatDecimal(product.salePrice, 0, 'COMMA', 0, 'POINT')}">₫0</span>
+                </div>
+                <a th:href="@{/product/{slug}(slug=${product.slug})}" class="buy-btn" title="Xem chi tiết"><i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </a>
+        </article>
+      </th:block>
+      <th:block th:if="${featuredProducts == null or featuredProducts.empty}">
+        <div class="text-center text-muted-custom" style="grid-column:1/-1;padding:60px 0">
+          <i class="fa-solid fa-box-open d-block mb-3" style="font-size:48px"></i>
+          Chưa có sản phẩm nổi bật. <a th:href="@{/marketplace}" class="text-accent">Xem cửa hàng</a>
+        </div>
+      </th:block>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Quy Trình Mua Hàng</div>
+        <h2>4 bước đơn giản, không cần tài khoản.</h2>
+      </div>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-ico"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <h3>Chọn sản phẩm</h3>
+        <p>Duyệt qua hơn 500+ sản phẩm số. So sánh giá, đọc đánh giá thật từ khách đã mua.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-ico"><i class="fa-solid fa-credit-card"></i></div>
+        <h3>Thanh toán</h3>
+        <p>Hỗ trợ MoMo, VNPay, ZaloPay, thẻ quốc tế &amp; USDT. An toàn, mã hóa SSL.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-ico"><i class="fa-solid fa-bolt"></i></div>
+        <h3>Nhận trong 30s</h3>
+        <p>Tài khoản/Key được gửi tự động qua email &amp; hiện trên dashboard của bạn.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-ico"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>Bảo hành trọn gói</h3>
+        <p>Lỗi tài khoản? Đổi mới miễn phí hoặc hoàn tiền 100%. Chat 24/7.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Khách Hàng Nói Gì</div>
+        <h2>12,400+ đánh giá thực tế. Điểm trung bình 4.9/5.</h2>
+      </div>
+    </div>
+    <div class="testi-grid">
+      <div class="testi">
+        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <blockquote>"Mua Netflix lúc 2h sáng, 10 giây sau có tài khoản gửi qua email. Nhanh kinh khủng. Giá rẻ hơn mua trực tiếp 40%, đã dùng 6 tháng không vấn đề."</blockquote>
+        <div class="testi-author">
+          <img src="https://i.pravatar.cc/64?img=47" alt="">
+          <div><div class="testi-name">Minh Trần</div><div class="testi-role">Hà Nội · Khách VIP</div></div>
+          <span class="testi-bought">Đã mua 14 lần</span>
+        </div>
+      </div>
+      <div class="testi">
+        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <blockquote>"Mua ChatGPT Plus cho team 5 người. Support Telegram trả lời trong 2 phút mỗi lần có vấn đề. Đáng đồng tiền. Sẽ mua tiếp."</blockquote>
+        <div class="testi-author">
+          <img src="https://i.pravatar.cc/64?img=32" alt="">
+          <div><div class="testi-name">Linh Phạm</div><div class="testi-role">TP.HCM · Agency Owner</div></div>
+          <span class="testi-bought">Đã mua 8 lần</span>
+        </div>
+      </div>
+      <div class="testi">
+        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <blockquote>"Steam key Elden Ring giá nửa region khác. Kích hoạt sạch sẽ, play ngay. Đã làm customer suốt 1 năm — chưa dính 1 lần bị thu hồi key nào."</blockquote>
+        <div class="testi-author">
+          <img src="https://i.pravatar.cc/64?img=68" alt="">
+          <div><div class="testi-name">Đạt Nguyễn</div><div class="testi-role">Đà Nẵng · Game thủ</div></div>
+          <span class="testi-bought">Đã mua 22 lần</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="cta-strip">
+      <div>
+        <div class="eyebrow text-accent-2">Bắt Đầu Ngay</div>
+        <h2 class="mt-3">Còn chờ gì nữa?<br>Giá tốt nhất đang đợi bạn.</h2>
+        <p>Tạo tài khoản &amp; nhận ngay 50.000₫ cho đơn đầu tiên. Không tích điểm phức tạp, giảm trực tiếp.</p>
+      </div>
+      <div class="d-flex flex-column gap-2" style="min-width:260px">
+        <a th:href="@{/auth/register}" class="btn btn-primary btn-lg btn-block" sec:authorize="!isAuthenticated()">Đăng ký miễn phí <i class="fa-solid fa-arrow-right"></i></a>
+        <a th:href="@{/marketplace}" class="btn btn-ghost btn-lg btn-block">Duyệt cửa hàng</a>
+      </div>
+    </div>
+  </div>
 </section>
 
 <th:block th:replace="~{layout/footer :: footer}" />
 <th:block th:replace="~{layout/js :: js}" />
+<script>
+  // Carousel
+  (function() {
+    const track = document.getElementById('carouselTrack');
+    const dots = document.querySelectorAll('#carouselDots .dot');
+    if (!track) return;
+    let idx = 0, timer = null;
+    const total = dots.length;
+    function go(i) {
+      idx = (i + total) % total;
+      track.style.transform = `translateX(-${idx * 100}%)`;
+      dots.forEach((d,k) => d.classList.toggle('active', k === idx));
+      clearInterval(timer);
+      timer = setInterval(() => go(idx + 1), 6000);
+    }
+    document.getElementById('prevSlide').addEventListener('click', () => go(idx - 1));
+    document.getElementById('nextSlide').addEventListener('click', () => go(idx + 1));
+    dots.forEach(d => d.addEventListener('click', () => go(parseInt(d.dataset.i))));
+    timer = setInterval(() => go(idx + 1), 6000);
+  })();
+
+  // Countdown
+  let total = 23 * 3600 + 47 * 60 + 12;
+  setInterval(() => {
+    total--; if (total < 0) total = 24 * 3600;
+    document.getElementById('cd-h').textContent = String(Math.floor(total/3600)).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(Math.floor((total%3600)/60)).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(total%60).padStart(2,'0');
+  }, 1000);
+</script>
 </body>
 </html>
