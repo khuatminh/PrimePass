@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lịch Sử Đơn Hàng</title>
+    <th:block th:replace="~{layout/css :: css}"></th:block>
+</head>
+<body class="bg-dark text-light">
+<div th:replace="~{layout/header :: header}"></div>
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">Lịch Sử Đơn Hàng</h2>
+    <div th:if="${orders.isEmpty()}"><p>Bạn chưa có đơn hàng nào.</p></div>
+    <table class="table table-dark" th:unless="${orders.isEmpty()}">
+        <thead><tr><th>#</th><th>Ngày</th><th>Tổng tiền</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}"></td>
+                <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT') + 'đ'}"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${order.status.name() == 'completed'} ? 'bg-success' : (${order.status.name() == 'pending'} ? 'bg-warning' : 'bg-secondary')"
+                          th:text="${order.status}"></span>
+                </td>
+                <td><a th:href="@{/order/{id}(id=${order.id})}" class="btn btn-sm btn-outline-primary">Xem</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div th:replace="~{layout/footer :: footer}"></div>
+<th:block th:replace="~{layout/js :: js}"></th:block>
+</body>
+</html>

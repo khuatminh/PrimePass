@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi Tiết Đơn Hàng</title>
+    <th:block th:replace="~{layout/css :: css}"></th:block>
+</head>
+<body class="bg-dark text-light">
+<div th:replace="~{layout/header :: header}"></div>
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">Đơn Hàng #<span th:text="${order.id}"></span></h2>
+    <p>Trạng thái: <strong th:text="${order.status}"></strong></p>
+    <p>Ngày đặt: <span th:text="${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}"></span></p>
+    <p>Tổng tiền: <strong th:text="${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT') + 'đ'}"></strong></p>
+    <h5 class="mt-4">Sản phẩm đã mua</h5>
+    <div th:each="item : ${order.items}" class="card bg-secondary border-0 mb-3 p-3">
+        <div class="d-flex align-items-center gap-3">
+            <img th:src="@{${item.product.imageUrl}}" width="60" />
+            <div>
+                <strong th:text="${item.product.name}"></strong>
+                <span th:if="${item.variant != null}" th:text="' — ' + ${item.variant.variantLabel}"></span>
+                <br/>
+                <span th:text="${#numbers.formatDecimal(item.unitPrice,0,'COMMA',0,'POINT') + 'đ x ' + item.quantity}"></span>
+            </div>
+        </div>
+        <div th:if="${item.productKey != null}" class="alert alert-success mt-3">
+            <strong>Thông tin tài khoản/key của bạn:</strong><br/>
+            <span th:if="${item.productKey.keyType.name() == 'account'}">
+                Email: <code th:text="${item.productKey.accountEmail}"></code><br/>
+                Mật khẩu: <code th:text="${item.productKey.accountPassword}"></code>
+            </span>
+            <span th:if="${item.productKey.keyType.name() == 'serial_key'}">
+                Key: <code th:text="${item.productKey.serialKey}"></code>
+            </span>
+        </div>
+        <div th:if="${item.productKey == null and order.status.name() == 'completed'}" class="alert alert-warning mt-2">
+            Kho hết hàng — admin sẽ liên hệ bạn sớm.
+        </div>
+    </div>
+</div>
+<div th:replace="~{layout/footer :: footer}"></div>
+<th:block th:replace="~{layout/js :: js}"></th:block>
+</body>
+</html>
