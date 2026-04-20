@@ -1,0 +1,107 @@
+/* ============================================
+   PixelVault — Admin styles
+   ============================================ */
+
+body { background: var(--bg-0); color: var(--text); font-family: var(--font-body); margin: 0; }
+.admin-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+.sidebar {
+    background: #07050f;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+.sidebar-brand {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+.sidebar-brand .brand-mark { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; flex-shrink: 0; }
+.sidebar-brand .brand-name { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--text); line-height: 1.2; }
+.sidebar-brand .brand-sub { font-size: 11px; color: var(--text-muted); }
+.sidebar-label { padding: 16px 20px 6px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); }
+.sidebar-nav { flex: 1; padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; }
+.side-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--r-sm);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: background .15s, color .15s;
+}
+.side-item:hover { background: var(--surface); color: var(--text); }
+.side-item.active { background: var(--accent-soft); color: var(--accent); }
+.side-item i { width: 16px; text-align: center; font-size: 14px; }
+.sidebar-footer { padding: 12px; border-top: 1px solid var(--line); }
+.admin-main { padding: 32px; overflow-x: hidden; }
+.admin-section { margin-bottom: 32px; }
+.admin-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.admin-section-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.kpi {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 20px 24px;
+}
+.kpi-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.kpi-value { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--text); }
+.kpi-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--line);
+}
+.admin-table td {
+    padding: 12px 14px;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--line);
+    color: var(--text);
+    vertical-align: middle;
+}
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: var(--surface-hi); }
+.table-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+.form-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 24px; }
+.form-field { margin-bottom: 16px; }
+.form-field label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+.form-field input,
+.form-field select,
+.form-field textarea {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-sm);
+    padding: 9px 12px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color .15s;
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus { border-color: var(--accent); }
+.form-field .error-msg { font-size: 12px; color: var(--danger); margin-top: 4px; }
+.page-header { margin-bottom: 28px; }
+.page-header h1 { font-family: var(--font-display); font-size: 26px; font-weight: 700; margin: 0 0 4px; }
+.page-header p { color: var(--text-muted); font-size: 14px; margin: 0; }
+.action-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
