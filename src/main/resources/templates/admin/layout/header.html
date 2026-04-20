@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+<header th:fragment="header(pageTitle)" class="px-4 py-3 bg-secondary d-flex justify-content-between align-items-center shadow-sm sticky-top">
+    <h5 class="fw-bold mb-0 text-white" th:text="${pageTitle}">Admin</h5>
+    <span class="text-white-50 small" sec:authentication="name">admin</span>
+</header>
+</body>
+</html>

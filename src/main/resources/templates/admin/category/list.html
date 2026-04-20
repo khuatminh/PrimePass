@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><title>Danh Muc | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
+<body class="bg-dark text-white">
+<div class="d-flex" style="min-height:100vh">
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+    <div class="flex-grow-1 d-flex flex-column">
+        <div th:replace="~{admin/layout/header :: header('Quan Ly Danh Muc')}"></div>
+        <main class="p-4">
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4"><div class="card bg-secondary p-3 rounded-4 text-white"><div class="small">Tong danh muc</div><h3 th:text="${totalCategories}">0</h3></div></div>
+                <div class="col-md-4"><div class="card bg-secondary p-3 rounded-4 text-white"><div class="small">Dang hoat dong</div><h3 th:text="${activeCategories}">0</h3></div></div>
+                <div class="col-md-4"><div class="card bg-secondary p-3 rounded-4 text-white"><div class="small">Tong san pham</div><h3 th:text="${totalProducts}">0</h3></div></div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">Danh Sach Danh Muc</h5>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">+ Them danh muc</button>
+            </div>
+            <table class="table table-dark table-striped">
+                <thead><tr><th>#</th><th>Ten</th><th>Slug</th><th>Trang thai</th><th>Thu tu</th><th></th></tr></thead>
+                <tbody>
+                    <tr th:each="cat : ${categories}">
+                        <td th:text="${cat.id}"></td>
+                        <td th:text="${cat.name}"></td>
+                        <td th:text="${cat.slug}"></td>
+                        <td><span class="badge" th:classappend="${cat.isActive} ? 'bg-success' : 'bg-secondary'" th:text="${cat.isActive} ? 'Hien' : 'An'"></span></td>
+                        <td th:text="${cat.sortOrder}"></td>
+                        <td>
+                            <a th:href="@{/admin/categories/edit/{id}(id=${cat.id})}" class="btn btn-sm btn-outline-primary me-1">Sua</a>
+                            <a th:href="@{/admin/categories/delete/{id}(id=${cat.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xoa danh muc nay?')">Xoa</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+</div>
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-secondary text-white">
+            <div class="modal-header"><h5 class="modal-title">Them Danh Muc</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form th:action="@{/admin/categories/add}" th:object="${newCategory}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">Ten danh muc</label><input type="text" th:field="*{name}" class="form-control" required/></div>
+                    <div class="mb-3"><label class="form-label">Icon URL</label><input type="text" th:field="*{iconUrl}" class="form-control"/></div>
+                    <div class="mb-3"><label class="form-label">Mo ta</label><textarea th:field="*{description}" class="form-control" rows="2"></textarea></div>
+                    <div class="mb-3"><label class="form-label">Thu tu</label><input type="number" th:field="*{sortOrder}" class="form-control" value="0"/></div>
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-primary">Them</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+</body>
+</html>

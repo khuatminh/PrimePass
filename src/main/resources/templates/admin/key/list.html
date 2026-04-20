@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><title>Kho Key | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
+<body class="bg-dark text-white">
+<div class="d-flex" style="min-height:100vh">
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+    <div class="flex-grow-1 d-flex flex-column">
+        <div th:replace="~{admin/layout/header :: header('Kho Key / Tai Khoan')}"></div>
+        <main class="p-4">
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <form th:action="@{/admin/keys}" method="get" class="d-flex gap-2 mb-3">
+                <select name="productId" class="form-select" style="max-width:250px">
+                    <option value="">— Tat ca san pham —</option>
+                    <option th:each="p : ${products}" th:value="${p.id}" th:text="${p.name}" th:selected="${p.id == selectedProductId}"></option>
+                </select>
+                <button class="btn btn-outline-light">Loc</button>
+                <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#addKeyModal">+ Nhap key</button>
+            </form>
+            <table class="table table-dark table-striped">
+                <thead><tr><th>San pham</th><th>Loai</th><th>Email/Key</th><th>Trang thai</th></tr></thead>
+                <tbody>
+                    <tr th:each="k : ${keys}">
+                        <td th:text="${k.product.name}"></td>
+                        <td th:text="${k.keyType}"></td>
+                        <td>
+                            <span th:if="${k.keyType.name() == 'account'}" th:text="${k.accountEmail}"></span>
+                            <span th:if="${k.keyType.name() == 'serial_key'}" th:text="${k.serialKey}"></span>
+                        </td>
+                        <td><span class="badge" th:classappend="${k.status.name() == 'available'} ? 'bg-success' : 'bg-secondary'" th:text="${k.status}"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+</div>
+<div class="modal fade" id="addKeyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-secondary text-white">
+            <div class="modal-header"><h5 class="modal-title">Nhap Key / Tai Khoan</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form th:action="@{/admin/keys/add}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">San pham</label><select name="productId" class="form-select" required><option th:each="p : ${products}" th:value="${p.id}" th:text="${p.name}"></option></select></div>
+                    <div class="mb-3"><label class="form-label">Loai key</label><select name="keyType" class="form-select"><option value="account">Tai khoan (email + mat khau)</option><option value="serial_key">Serial Key</option></select></div>
+                    <div class="mb-3"><label class="form-label">Email (neu la tai khoan)</label><input type="text" name="accountEmail" class="form-control"/></div>
+                    <div class="mb-3"><label class="form-label">Mat khau (neu la tai khoan)</label><input type="text" name="accountPassword" class="form-control"/></div>
+                    <div class="mb-3"><label class="form-label">Serial Key (neu la key)</label><input type="text" name="serialKey" class="form-control"/></div>
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-primary">Luu</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+</body>
+</html>

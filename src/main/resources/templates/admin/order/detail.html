@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><title>Chi Tiet Don Hang | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
+<body class="bg-dark text-white">
+<div class="d-flex" style="min-height:100vh">
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+    <div class="flex-grow-1 d-flex flex-column">
+        <div th:replace="~{admin/layout/header :: header('Chi Tiet Don Hang')}"></div>
+        <main class="p-4">
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <h5>Don hang #<span th:text="${order.id}"></span></h5>
+            <p>Khach: <strong th:text="${order.user.username}"></strong></p>
+            <p>Tong tien: <strong th:text="${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT') + 'd'}"></strong></p>
+            <p>Trang thai hien tai: <span class="badge bg-primary" th:text="${order.status}"></span></p>
+            <p>VNPay Txn Ref: <code th:text="${order.vnpayTxnRef}"></code></p>
+            <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="post" class="d-flex gap-2 mb-4">
+                <select name="status" class="form-select" style="max-width:200px">
+                    <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == order.status}"></option>
+                </select>
+                <button class="btn btn-warning">Cap nhat</button>
+            </form>
+            <h6>San pham</h6>
+            <table class="table table-dark table-sm">
+                <thead><tr><th>San pham</th><th>Variant</th><th>SL</th><th>Don gia</th><th>Key/Account</th></tr></thead>
+                <tbody>
+                    <tr th:each="item : ${items}">
+                        <td th:text="${item.product.name}"></td>
+                        <td th:text="${item.variant != null ? item.variant.variantLabel : '-'}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${#numbers.formatDecimal(item.unitPrice,0,'COMMA',0,'POINT') + 'd'}"></td>
+                        <td>
+                            <span th:if="${item.productKey != null}">
+                                <small th:if="${item.productKey.keyType.name() == 'account'}" th:text="${item.productKey.accountEmail + ' / ' + item.productKey.accountPassword}"></small>
+                                <small th:if="${item.productKey.keyType.name() == 'serial_key'}" th:text="${item.productKey.serialKey}"></small>
+                            </span>
+                            <span th:if="${item.productKey == null}" class="text-muted">Chua giao</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <a th:href="@{/admin/orders}" class="btn btn-outline-secondary mt-3">&larr; Danh sach</a>
+        </main>
+    </div>
+</div>
+<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+</body>
+</html>

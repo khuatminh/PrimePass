@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><title>Nguoi Dung | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
+<body class="bg-dark text-white">
+<div class="d-flex" style="min-height:100vh">
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+    <div class="flex-grow-1 d-flex flex-column">
+        <div th:replace="~{admin/layout/header :: header('Quan Ly Nguoi Dung')}"></div>
+        <main class="p-4">
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <table class="table table-dark table-striped">
+                <thead><tr><th>#</th><th>Username</th><th>Email</th><th>Ho ten</th><th>Role</th><th></th></tr></thead>
+                <tbody>
+                    <tr th:each="u : ${users}">
+                        <td th:text="${u.id}"></td>
+                        <td th:text="${u.username}"></td>
+                        <td th:text="${u.email}"></td>
+                        <td th:text="${u.fullName}"></td>
+                        <td><span class="badge" th:classappend="${u.role.name() == 'admin'} ? 'bg-danger' : 'bg-info'" th:text="${u.role}"></span></td>
+                        <td>
+                            <form th:action="@{/admin/users/{id}/toggle-role(id=${u.id})}" method="post">
+                                <button class="btn btn-sm btn-outline-warning">Doi role</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+</div>
+<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+</body>
+</html>

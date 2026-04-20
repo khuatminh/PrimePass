@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><title>Variants | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
+<body class="bg-dark text-white">
+<div class="d-flex" style="min-height:100vh">
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+    <div class="flex-grow-1 d-flex flex-column">
+        <div th:replace="~{admin/layout/header :: header('Quan Ly Variants')}"></div>
+        <main class="p-4">
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <h5>San pham: <strong th:text="${product.name}"></strong></h5>
+            <a th:href="@{/admin/products}" class="btn btn-sm btn-outline-secondary mb-3">&larr; Quay lai</a>
+            <table class="table table-dark table-striped mb-4">
+                <thead><tr><th>Label</th><th>Gia</th><th>Ton kho</th><th></th></tr></thead>
+                <tbody>
+                    <tr th:each="v : ${variants}">
+                        <td th:text="${v.variantLabel}"></td>
+                        <td th:text="${#numbers.formatDecimal(v.price,0,'COMMA',0,'POINT') + 'd'}"></td>
+                        <td th:text="${v.stockCount}"></td>
+                        <td><a th:href="@{/admin/products/{pid}/variants/delete/{vid}(pid=${product.id},vid=${v.id})}" onclick="return confirm('Xoa variant nay?')" class="btn btn-sm btn-outline-danger">Xoa</a></td>
+                    </tr>
+                    <tr th:if="${variants.isEmpty()}"><td colspan="4" class="text-center text-muted">Chua co variant nao</td></tr>
+                </tbody>
+            </table>
+            <div class="card bg-secondary p-4 rounded-4" style="max-width:500px">
+                <h6 class="fw-bold mb-3">Them Variant Moi</h6>
+                <form th:action="@{/admin/products/{id}/variants/add(id=${product.id})}" method="post">
+                    <div class="mb-3"><label class="form-label">Nhan variant</label><input type="text" name="variantLabel" class="form-control" placeholder="VD: 06 thang, Premium - 12 thang" required/></div>
+                    <div class="mb-3"><label class="form-label">Gia (d)</label><input type="number" name="price" class="form-control" required/></div>
+                    <div class="mb-3"><label class="form-label">So luong ton kho</label><input type="number" name="stockCount" class="form-control" value="0" required/></div>
+                    <button type="submit" class="btn btn-primary">Them Variant</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+</body>
+</html>

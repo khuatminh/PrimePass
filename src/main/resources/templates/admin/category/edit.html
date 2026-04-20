@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><title>Sua Danh Muc | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
+<body class="bg-dark text-white">
+<div class="d-flex" style="min-height:100vh">
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+    <div class="flex-grow-1 d-flex flex-column">
+        <div th:replace="~{admin/layout/header :: header('Sua Danh Muc')}"></div>
+        <main class="p-4" style="max-width:600px">
+            <form th:action="@{/admin/categories/edit/{id}(id=${category.id})}" th:object="${category}" method="post">
+                <div class="mb-3"><label class="form-label">Ten</label><input type="text" th:field="*{name}" class="form-control" required/></div>
+                <div class="mb-3"><label class="form-label">Icon URL</label><input type="text" th:field="*{iconUrl}" class="form-control"/></div>
+                <div class="mb-3"><label class="form-label">Mo ta</label><textarea th:field="*{description}" class="form-control" rows="3"></textarea></div>
+                <div class="mb-3"><label class="form-label">Thu tu</label><input type="number" th:field="*{sortOrder}" class="form-control"/></div>
+                <div class="mb-3 form-check"><input type="checkbox" th:field="*{isActive}" class="form-check-input"/><label class="form-check-label">Hien thi</label></div>
+                <a th:href="@{/admin/categories}" class="btn btn-secondary me-2">Huy</a>
+                <button type="submit" class="btn btn-primary">Luu</button>
+            </form>
+        </main>
+    </div>
+</div>
+<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard | Admin</title>
+    <th:block th:replace="~{admin/layout/css :: css}"></th:block>
+</head>
+<body class="bg-dark text-white">
+<div class="d-flex" style="min-height:100vh">
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+    <div class="flex-grow-1 d-flex flex-column">
+        <div th:replace="~{admin/layout/header :: header('Dashboard')}"></div>
+        <main class="p-4">
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-secondary text-white p-3 rounded-4">
+                        <div class="small text-white-50">Tong don hang</div>
+                        <h3 class="fw-bold" th:text="${totalOrders}">0</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-secondary text-white p-3 rounded-4">
+                        <div class="small text-white-50">Doanh thu (d)</div>
+                        <h3 class="fw-bold" th:text="${#numbers.formatDecimal(totalRevenue,0,'COMMA',0,'POINT')}">0</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-secondary text-white p-3 rounded-4">
+                        <div class="small text-white-50">San pham</div>
+                        <h3 class="fw-bold" th:text="${totalProducts}">0</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-secondary text-white p-3 rounded-4">
+                        <div class="small text-white-50">Nguoi dung</div>
+                        <h3 class="fw-bold" th:text="${totalUsers}">0</h3>
+                    </div>
+                </div>
+            </div>
+            <h5 class="fw-bold mb-3">Don hang gan day</h5>
+            <table class="table table-dark table-striped">
+                <thead><tr><th>#</th><th>Khach hang</th><th>Tong tien</th><th>Trang thai</th><th></th></tr></thead>
+                <tbody>
+                    <tr th:each="order : ${recentOrders}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${order.user.username}"></td>
+                        <td th:text="${#numbers.formatDecimal(order.finalAmount,0,'COMMA',0,'POINT') + 'd'}"></td>
+                        <td><span class="badge bg-primary" th:text="${order.status}"></span></td>
+                        <td><a th:href="@{/admin/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline-light">Xem</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+</div>
+<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+</body>
+</html>

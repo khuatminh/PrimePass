@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><title>Sua San Pham | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
+<body class="bg-dark text-white">
+<div class="d-flex" style="min-height:100vh">
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+    <div class="flex-grow-1 d-flex flex-column">
+        <div th:replace="~{admin/layout/header :: header('Sua San Pham')}"></div>
+        <main class="p-4" style="max-width:700px">
+            <form th:action="@{/admin/products/edit/{id}(id=${product.id})}" method="post" enctype="multipart/form-data">
+                <div class="mb-3"><label class="form-label">Ten san pham *</label><input type="text" name="name" class="form-control" th:value="${product.name}" required/></div>
+                <div class="mb-3"><label class="form-label">Mo ta</label><textarea name="description" class="form-control" rows="4" th:text="${product.description}"></textarea></div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6"><label class="form-label">Danh muc *</label>
+                        <select name="categoryId" class="form-select" required><option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}" th:selected="${cat.id == product.category.id}"></option></select></div>
+                    <div class="col-md-6"><label class="form-label">Loai giao hang</label>
+                        <select name="deliveryType" class="form-select"><option th:each="dt : ${deliveryTypes}" th:value="${dt}" th:text="${dt}" th:selected="${dt == product.deliveryType}"></option></select></div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6"><label class="form-label">Gia goc (d)</label><input type="number" name="originalPrice" class="form-control" th:value="${product.originalPrice}"/></div>
+                    <div class="col-md-6"><label class="form-label">Gia ban (d)</label><input type="number" name="salePrice" class="form-control" th:value="${product.salePrice}"/></div>
+                </div>
+                <div class="mb-3"><label class="form-label">Bao hanh</label><input type="text" name="warrantyInfo" class="form-control" th:value="${product.warrantyInfo}"/></div>
+                <div class="mb-3"><label class="form-label">Anh san pham</label><input type="file" name="imageFile" class="form-control" accept="image/*"/></div>
+                <div class="mb-3 form-check"><input type="checkbox" name="isFeatured" id="featured" class="form-check-input" th:checked="${product.isFeatured}"/><label class="form-check-label" for="featured">San pham noi bat</label></div>
+                <div class="mb-3 form-check"><input type="checkbox" name="isActive" id="active" class="form-check-input" th:checked="${product.isActive}"/><label class="form-check-label" for="active">Hien thi</label></div>
+                <a th:href="@{/admin/products}" class="btn btn-secondary me-2">Huy</a>
+                <button type="submit" class="btn btn-primary">Cap nhat</button>
+            </form>
+        </main>
+    </div>
+</div>
+<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+</body>
+</html>

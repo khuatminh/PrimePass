@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<aside th:fragment="sidebar" class="sidebar d-flex flex-column py-4" style="width:250px;min-height:100vh;background:#1a1d23;">
+    <a class="navbar-brand d-flex align-items-center justify-content-center gap-2 mb-3 text-white" th:href="@{/}">
+        <i class="fa-solid fa-store"></i>
+        <span class="fw-bold">Digital Store</span>
+    </a>
+    <nav class="flex-grow-1 mt-3">
+        <ul class="nav flex-column gap-1 px-3">
+            <li><a th:href="@{/admin}" class="nav-link text-white-50"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a></li>
+            <li><a th:href="@{/admin/products}" class="nav-link text-white-50"><i class="fa-solid fa-box me-2"></i>San pham</a></li>
+            <li><a th:href="@{/admin/categories}" class="nav-link text-white-50"><i class="fa-solid fa-tags me-2"></i>Danh muc</a></li>
+            <li><a th:href="@{/admin/keys}" class="nav-link text-white-50"><i class="fa-solid fa-key me-2"></i>Kho Key</a></li>
+            <li><a th:href="@{/admin/orders}" class="nav-link text-white-50"><i class="fa-solid fa-receipt me-2"></i>Don hang</a></li>
+            <li><a th:href="@{/admin/users}" class="nav-link text-white-50"><i class="fa-solid fa-users me-2"></i>Nguoi dung</a></li>
+            <li><a th:href="@{/admin/coupons}" class="nav-link text-white-50"><i class="fa-solid fa-ticket me-2"></i>Coupon</a></li>
+        </ul>
+    </nav>
+    <div class="px-3 mt-auto">
+        <form th:action="@{/auth/logout}" method="post">
+            <button type="submit" class="btn btn-outline-danger w-100">Dang xuat</button>
+        </form>
+    </div>
+</aside>
+</body>
+</html>

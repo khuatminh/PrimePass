@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><title>San Pham | Admin</title><th:block th:replace="~{admin/layout/css :: css}"></th:block></head>
+<body class="bg-dark text-white">
+<div class="d-flex" style="min-height:100vh">
+    <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+    <div class="flex-grow-1 d-flex flex-column">
+        <div th:replace="~{admin/layout/header :: header('Quan Ly San Pham')}"></div>
+        <main class="p-4">
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div class="d-flex justify-content-between mb-3">
+                <form th:action="@{/admin/products}" method="get" class="d-flex gap-2">
+                    <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Tim san pham..."/>
+                    <button class="btn btn-outline-light">Tim</button>
+                </form>
+                <a th:href="@{/admin/products/add}" class="btn btn-primary">+ Them san pham</a>
+            </div>
+            <table class="table table-dark table-striped">
+                <thead><tr><th>#</th><th>Anh</th><th>Ten</th><th>Gia</th><th>Danh muc</th><th>Trang thai</th><th></th></tr></thead>
+                <tbody>
+                    <tr th:each="p : ${products.content}">
+                        <td th:text="${p.id}"></td>
+                        <td><img th:src="${p.imageUrl}" width="40" style="border-radius:6px"/></td>
+                        <td th:text="${p.name}"></td>
+                        <td th:text="${#numbers.formatDecimal(p.salePrice,0,'COMMA',0,'POINT') + 'd'}"></td>
+                        <td th:text="${p.category.name}"></td>
+                        <td><span class="badge" th:classappend="${p.isActive} ? 'bg-success' : 'bg-secondary'" th:text="${p.isActive} ? 'Hien' : 'An'"></span></td>
+                        <td class="d-flex gap-1">
+                            <a th:href="@{/admin/products/edit/{id}(id=${p.id})}" class="btn btn-sm btn-outline-primary">Sua</a>
+                            <a th:href="@{/admin/products/{id}/variants(id=${p.id})}" class="btn btn-sm btn-outline-warning">Variants</a>
+                            <a th:href="@{/admin/products/delete/{id}(id=${p.id})}" onclick="return confirm('Xoa san pham nay?')" class="btn btn-sm btn-outline-danger">Xoa</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <nav th:if="${products.totalPages > 1}">
+                <ul class="pagination">
+                    <li th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}" class="page-item" th:classappend="${i == products.number} ? 'active'">
+                        <a class="page-link" th:href="@{/admin/products(page=${i}, keyword=${keyword})}" th:text="${i + 1}"></a>
+                    </li>
+                </ul>
+            </nav>
+        </main>
+    </div>
+</div>
+<th:block th:replace="~{admin/layout/js :: js}"></th:block>
+</body>
+</html>
