@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Marketplace</title>
+    <div th:replace="~{layout/css :: css}"></div>
+</head>
+<body class="bg-light">
+<div th:replace="~{layout/header :: header}"></div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h4 class="card-title text-center mb-4 fw-bold">Sign In</h4>
+                    <div class="alert alert-success py-2" th:if="${param.registered}">
+                        Registration successful! Please log in.
+                    </div>
+                    <div class="alert alert-danger py-2" th:if="${param.error}">
+                        Invalid username or password. Please try again.
+                    </div>
+                    <form th:action="@{/auth/login}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username or Email</label>
+                            <input type="text" class="form-control" id="username"
+                                   name="username" placeholder="Enter username or email" required autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password"
+                                   name="password" placeholder="Enter password" required>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                            </button>
+                        </div>
+                    </form>
+                    <hr class="my-3">
+                    <p class="text-center mb-0 small">
+                        Don't have an account?
+                        <a th:href="@{/auth/register}" class="text-decoration-none">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{layout/footer :: footer}"></div>
+<div th:replace="~{layout/js :: js}"></div>
+</body>
+</html>

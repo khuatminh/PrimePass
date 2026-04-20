@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="bg-dark text-light py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h6 class="fw-bold"><i class="bi bi-shield-lock-fill text-primary me-1"></i> DevPro Marketplace</h6>
+                <p class="text-muted small">Buy and sell premium digital accounts.</p>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-bold">Quick Links</h6>
+                <ul class="list-unstyled small">
+                    <li><a class="text-muted text-decoration-none" th:href="@{/}">Home</a></li>
+                    <li><a class="text-muted text-decoration-none" th:href="@{/marketplace}">Marketplace</a></li>
+                    <li><a class="text-muted text-decoration-none" th:href="@{/cart}">Cart</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-bold">Contact</h6>
+                <p class="text-muted small mb-0"><i class="bi bi-envelope me-1"></i> support@devpro.vn</p>
+            </div>
+        </div>
+        <hr class="border-secondary" />
+        <p class="text-center text-muted small mb-0">&copy; 2025 DevPro Marketplace. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>
