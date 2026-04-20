@@ -1,160 +1,249 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title th:text="${product.name} + ' — DevPro'">Product — DevPro</title>
-    <th:replace="~{layout/css :: css}" />
-    <style>
-        .variant-btn.active { background-color: var(--bs-primary) !important; color: #fff !important; border-color: var(--bs-primary) !important; }
-        .star-rating { color: #ffc107; }
-        .review-card { border-left: 3px solid var(--bs-primary); }
-    </style>
+    <title th:text="${product.name} + ' — PixelVault'">Sản phẩm — PixelVault</title>
+    <th:block th:replace="~{layout/css :: css}" />
+    <link rel="stylesheet" th:href="@{/css/product.css}" />
 </head>
-<body class="bg-dark text-light">
+<body>
 <th:block th:replace="~{layout/header :: header}" />
-<div class="container py-5">
-    <div class="row g-5">
-        <div class="col-md-5">
-            <img th:src="@{${product.imageUrl}}" class="img-fluid rounded shadow" th:alt="${product.name}" />
+
+<div class="container">
+  <!-- Breadcrumb -->
+  <div class="pd-breadcrumb">
+    <a th:href="@{/}">Trang chủ</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <a th:href="@{/marketplace}">Cửa hàng</a>
+    <th:block th:if="${product.category != null}">
+      <i class="fa-solid fa-chevron-right"></i>
+      <a th:href="@{/marketplace(categoryId=${product.category.id})}" th:text="${product.category.name}">Category</a>
+    </th:block>
+    <i class="fa-solid fa-chevron-right"></i>
+    <span class="current" th:text="${product.name}">Product</span>
+  </div>
+
+  <div class="pd-main">
+    <!-- Gallery -->
+    <div class="pd-gallery">
+      <div class="pd-hero-img">
+        <div class="pd-badges">
+          <span class="pill pill-success" th:if="${product.isFeatured}"><i class="fa-solid fa-fire"></i> HOT</span>
+          <span class="pill pill-accent"
+                th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
+                th:text="'-' + ${#numbers.formatDecimal((1 - product.salePrice / product.originalPrice) * 100, 0, 0)} + '%'">-30%</span>
         </div>
-        <div class="col-md-7">
-            <nav aria-label="breadcrumb" class="mb-2">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a th:href="@{/marketplace}" class="text-primary">Marketplace</a></li>
-                    <li class="breadcrumb-item" th:if="${product.category != null}">
-                        <a th:href="@{/marketplace(categoryId=${product.category.id})}" th:text="${product.category.name}" class="text-primary">Category</a>
-                    </li>
-                    <li class="breadcrumb-item active text-muted" aria-current="page" th:text="${product.name}">Product</li>
-                </ol>
-            </nav>
-            <h1 class="fw-bold mb-2" th:text="${product.name}">Product Name</h1>
-            <div class="d-flex align-items-center gap-2 mb-3">
-                <span class="star-rating">
-                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                        <i th:class="${i <= avgRating} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
-                    </th:block>
-                </span>
-                <span class="text-muted small">(<span th:text="${#numbers.formatDecimal(avgRating, 1, 1)}">0.0</span>) · <span th:text="${reviews.size()}">0</span> review(s)</span>
-            </div>
-            <div class="mb-4">
-                <span class="text-decoration-line-through text-muted me-2"
-                      th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
-                      th:text="'₫' + ${#numbers.formatDecimal(product.originalPrice, 0, 'COMMA', 0, 'POINT')}"></span>
-                <span id="displayPrice" class="fw-bold text-primary fs-3"
-                      th:text="'₫' + ${#numbers.formatDecimal(product.salePrice, 0, 'COMMA', 0, 'POINT')}"></span>
-            </div>
-            <div th:if="${variantTypes != null and !variantTypes.empty}">
-                <div th:each="vType : ${variantTypes}" class="mb-3">
-                    <label class="fw-semibold mb-2 d-block" th:text="${vType.name}">Variant Type</label>
-                    <div class="d-flex flex-wrap gap-2" th:id="'variant-group-' + ${vType.id}"></div>
-                </div>
-            </div>
-            <form th:action="@{/cart/add}" method="post" class="mt-4">
-                <input type="hidden" name="productId" th:value="${product.id}" />
-                <input type="hidden" name="variantId" id="selectedVariantId" value="" />
-                <div class="input-group" style="max-width:220px;">
-                    <button type="button" class="btn btn-outline-secondary" onclick="changeQty(-1)">-</button>
-                    <input type="number" name="quantity" id="qtyInput" class="form-control text-center bg-secondary text-light border-0" value="1" min="1" max="99" />
-                    <button type="button" class="btn btn-outline-secondary" onclick="changeQty(1)">+</button>
-                </div>
-                <button type="submit" class="btn btn-primary btn-lg mt-3" sec:authorize="isAuthenticated()">
-                    <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                </button>
-                <a th:href="@{/auth/login}" class="btn btn-outline-primary btn-lg mt-3" sec:authorize="!isAuthenticated()">Login to Purchase</a>
-            </form>
-            <div class="mt-5" th:if="${product.description != null}">
-                <h5 class="fw-bold border-bottom border-secondary pb-2 mb-3">Description</h5>
-                <div th:utext="${product.description}" class="text-muted"></div>
-            </div>
-        </div>
+        <span th:text="${#strings.toUpperCase(#strings.substring(product.name, 0, T(java.lang.Math).min(2, product.name.length())))}">PV</span>
+      </div>
+
+      <div class="trust-strip">
+        <div class="trust-item"><i class="fa-solid fa-bolt"></i><strong>Giao 30s</strong><small>Tự động</small></div>
+        <div class="trust-item"><i class="fa-solid fa-shield-halved"></i><strong>Bảo hành</strong><small>Trọn gói</small></div>
+        <div class="trust-item"><i class="fa-solid fa-lock"></i><strong>Bảo mật</strong><small>SSL 256-bit</small></div>
+        <div class="trust-item"><i class="fa-solid fa-headset"></i><strong>24/7</strong><small>Hỗ trợ</small></div>
+      </div>
     </div>
-    <div class="mt-5" id="reviews">
-        <h4 class="fw-bold border-bottom border-secondary pb-2 mb-4">
-            Customer Reviews <span class="badge bg-secondary ms-2" th:text="${reviews.size()}">0</span>
-        </h4>
-        <p class="text-muted" th:if="${reviews.empty}">No reviews yet. Be the first to review!</p>
-        <div th:each="review : ${reviews}" class="card bg-secondary border-0 review-card mb-3 p-3">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <span class="fw-semibold me-2" th:text="${review.user.fullName != null ? review.user.fullName : review.user.username}">Username</span>
-                    <span class="star-rating small">
-                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                            <i th:class="${i <= review.rating} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
-                        </th:block>
-                    </span>
-                </div>
-                <span class="text-muted small" th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">Date</span>
+
+    <!-- Info -->
+    <div class="pd-info">
+      <div class="pd-cat" th:text="${product.category != null ? product.category.name : 'Digital Product'}">Category</div>
+      <h1 th:text="${product.name}">Product Name</h1>
+
+      <div class="pd-rating-row">
+        <div class="stars">
+          <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+            <i th:class="${i <= avgRating} ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+          </th:block>
+        </div>
+        <strong th:text="${#numbers.formatDecimal(avgRating, 1, 1)}">0.0</strong>
+        <span>(<span th:text="${reviews.size()}">0</span> đánh giá)</span>
+        <span class="text-success-custom d-flex align-items-center gap-1 ms-auto">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 0 4px rgba(74,222,128,0.15);flex-shrink:0;"></span>
+          Còn hàng
+        </span>
+      </div>
+
+      <!-- Price -->
+      <div class="pd-price-card">
+        <div class="pd-price-row">
+          <span id="displayPrice" class="pd-price-new"
+                th:text="'₫' + ${#numbers.formatDecimal(product.salePrice, 0, 'COMMA', 0, 'POINT')}">₫0</span>
+          <span class="pd-price-old"
+                th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
+                th:text="'₫' + ${#numbers.formatDecimal(product.originalPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+          <span class="pd-price-discount"
+                th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
+                th:text="'-' + ${#numbers.formatDecimal((1 - product.salePrice / product.originalPrice) * 100, 0, 0)} + '%'">-30%</span>
+        </div>
+        <div class="text-muted-custom d-flex align-items-center gap-1" style="font-size:13px;">
+          <i class="fa-solid fa-fire" style="color:#FF5C7C;font-size:12px;"></i>
+          Giá tốt nhất hôm nay · Kích hoạt trong 30 giây
+        </div>
+      </div>
+
+      <!-- Variant selector -->
+      <form th:action="@{/cart/add}" method="post" id="addCartForm">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <input type="hidden" name="productId" th:value="${product.id}" />
+        <input type="hidden" name="variantId" id="selectedVariantId" value="" />
+
+        <th:block th:if="${variants != null and !variants.empty}">
+          <div class="pd-option-group">
+            <div class="pd-option-label"><strong>Chọn gói</strong></div>
+            <div class="pd-options">
+              <label th:each="v, stat : ${variants}"
+                     class="pd-option"
+                     th:classappend="${stat.first} ? ' selected' : ''"
+                     th:onclick="'selectVariant(' + ${v.id} + ', &quot;₫' + ${#numbers.formatDecimal(v.price, 0, 'COMMA', 0, 'POINT')} + '&quot;, this)'">
+                <input type="radio" name="_variantRadio"
+                       th:value="${v.id}"
+                       th:checked="${stat.first}" />
+                <span class="opt-name" th:text="${v.variantLabel}">Gói 1 tháng</span>
+                <span class="opt-price" th:text="'₫' + ${#numbers.formatDecimal(v.price, 0, 'COMMA', 0, 'POINT')}">₫0</span>
+              </label>
             </div>
-            <p class="mt-2 mb-0 text-light" th:text="${review.comment}"></p>
+          </div>
+        </th:block>
+
+        <!-- Qty -->
+        <div class="pd-qty-row">
+          <div class="qty-stepper">
+            <button type="button" onclick="changeQty(-1)"><i class="fa-solid fa-minus"></i></button>
+            <span id="qtyDisplay">1</span>
+            <button type="button" onclick="changeQty(1)"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <input type="hidden" name="quantity" id="qtyInput" value="1" />
+          <span class="text-muted-custom" style="font-size:13px;">Tối đa 10 / đơn</span>
         </div>
-        <div class="mt-4" th:if="${canReview}">
-            <h5 class="fw-bold mb-3">Write a Review</h5>
-            <form th:action="@{/review/add}" method="post">
-                <input type="hidden" name="productId" th:value="${product.id}" />
-                <div class="mb-3">
-                    <label class="form-label">Rating</label>
-                    <div class="d-flex gap-2">
-                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="rating" th:id="'star' + ${i}" th:value="${i}" th:checked="${i == 5}" />
-                                <label class="form-check-label star-rating" th:for="'star' + ${i}" th:text="${i} + ' ★'">5 ★</label>
-                            </div>
-                        </th:block>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="reviewComment">Comment</label>
-                    <textarea id="reviewComment" name="comment" rows="3" class="form-control bg-secondary text-light border-0" placeholder="Share your experience..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-send me-1"></i> Submit Review</button>
-            </form>
+
+        <!-- Buttons -->
+        <div class="pd-buy-row" sec:authorize="isAuthenticated()">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-bag-shopping"></i> Thêm vào giỏ
+          </button>
+          <button type="button" class="btn btn-ghost btn-lg" onclick="buyNow()">
+            <i class="fa-solid fa-bolt"></i> Mua ngay
+          </button>
         </div>
-        <div class="alert alert-info mt-4" th:if="${!canReview}" sec:authorize="isAuthenticated()">
-            <i class="bi bi-info-circle me-1"></i> You need to purchase this product before writing a review.
+        <div sec:authorize="!isAuthenticated()">
+          <a th:href="@{/auth/login}" class="btn btn-primary btn-lg w-100 justify-content-center">
+            <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập để mua
+          </a>
         </div>
+      </form>
+
+      <!-- Benefits -->
+      <ul class="pd-benefits list-unstyled mt-4">
+        <li><i class="fa-solid fa-check-circle"></i><span><strong>Giao hàng tự động</strong> — Nhận tài khoản/key trong 30 giây sau thanh toán.</span></li>
+        <li><i class="fa-solid fa-check-circle"></i><span><strong>Bảo hành trọn gói</strong> — Đổi mới miễn phí nếu lỗi trong thời hạn.</span></li>
+        <li><i class="fa-solid fa-check-circle"></i><span><strong>Hỗ trợ 24/7</strong> — Chat trực tiếp qua Telegram hoặc trang web.</span></li>
+        <li><i class="fa-solid fa-check-circle"></i><span><strong>Thanh toán bảo mật</strong> — VNPay, MoMo, ZaloPay, VISA, USDT.</span></li>
+      </ul>
     </div>
+  </div>
+
+  <!-- Product description -->
+  <div th:if="${product.description != null}" class="card p-4 mx-auto mb-5" style="max-width:820px;">
+    <h3 class="mb-3" style="font-size:18px;">Mô tả sản phẩm</h3>
+    <div th:utext="${product.description}" class="text-muted-custom" style="font-size:14.5px;line-height:1.7;"></div>
+  </div>
+
+  <!-- Reviews -->
+  <div class="mx-auto" style="max-width:820px;margin-bottom:80px;" id="reviews">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h3 class="fw-bold mb-0" style="font-size:22px;">
+        Đánh giá
+        <span class="fw-normal text-muted-custom ms-2" style="font-size:14px;"
+              th:text="${reviews.size()} + ' đánh giá'"></span>
+      </h3>
+    </div>
+
+    <p th:if="${reviews.empty}" class="text-muted-custom text-center" style="padding:40px 0;">
+      Chưa có đánh giá nào. Hãy là người đầu tiên!
+    </p>
+
+    <div th:each="review : ${reviews}" class="review-item">
+      <div class="review-author">
+        <div class="review-avatar"
+             th:text="${#strings.toUpperCase(#strings.substring(review.user.fullName != null ? review.user.fullName : review.user.username, 0, 1))}">U</div>
+        <div>
+          <div class="review-name" th:text="${review.user.fullName != null ? review.user.fullName : review.user.username}">Username</div>
+          <div class="review-date" th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">01/01/2025</div>
+        </div>
+        <div class="review-stars ms-auto">
+          <th:block th:each="i : ${#numbers.sequence(1, review.rating)}">
+            <i class="fa-solid fa-star"></i>
+          </th:block>
+          <th:block th:each="i : ${#numbers.sequence(review.rating + 1, 5)}">
+            <i class="fa-regular fa-star" style="color:var(--line-strong)"></i>
+          </th:block>
+        </div>
+      </div>
+      <p th:text="${review.comment}" class="text-muted-custom" style="font-size:14px;line-height:1.6;"></p>
+    </div>
+
+    <!-- Review form -->
+    <div class="review-form-card" th:if="${canReview}">
+      <h4 class="mb-3" style="font-size:16px;">Viết đánh giá của bạn</h4>
+      <form th:action="@{/review/add}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <input type="hidden" name="productId" th:value="${product.id}" />
+        <div class="star-picker mb-3">
+          <input type="radio" name="rating" id="s5" value="5"><label for="s5" title="5 sao"><i class="fa-solid fa-star"></i></label>
+          <input type="radio" name="rating" id="s4" value="4"><label for="s4" title="4 sao"><i class="fa-solid fa-star"></i></label>
+          <input type="radio" name="rating" id="s3" value="3" checked><label for="s3" title="3 sao"><i class="fa-solid fa-star"></i></label>
+          <input type="radio" name="rating" id="s2" value="2"><label for="s2" title="2 sao"><i class="fa-solid fa-star"></i></label>
+          <input type="radio" name="rating" id="s1" value="1"><label for="s1" title="1 sao"><i class="fa-solid fa-star"></i></label>
+        </div>
+        <textarea name="comment" rows="3" placeholder="Chia sẻ trải nghiệm của bạn..."
+                  style="width:100%;background:var(--bg-2);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:12px;color:var(--text);font-family:var(--font-body);font-size:14px;resize:vertical;box-sizing:border-box;outline:none;"></textarea>
+        <button type="submit" class="btn btn-primary mt-3">Gửi đánh giá</button>
+      </form>
+    </div>
+
+    <div th:if="${!canReview and canReview != null}" class="text-center text-muted-custom mt-4" style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:20px;font-size:14px;">
+      <i class="fa-solid fa-lock me-1"></i>
+      Chỉ khách hàng đã mua sản phẩm mới có thể đánh giá.
+    </div>
+  </div>
 </div>
+
 <th:block th:replace="~{layout/footer :: footer}" />
 <th:block th:replace="~{layout/js :: js}" />
-<script th:inline="javascript">
-/*<![CDATA[*/
-const variants = /*[[${variants}]]*/ [];
-const basePrice = /*[[${product.salePrice}]]*/ 0;
-function formatVND(amount) { return '₫' + amount.toLocaleString('vi-VN'); }
-function initVariantSelector() {
-    if (!variants || variants.length === 0) return;
-    const typeMap = {};
-    variants.forEach(v => {
-        if (v.variantLabel) {
-            const parts = v.variantLabel.split(' - ');
-            parts.forEach((part, idx) => {
-                const typeId = 'type_' + idx;
-                if (!typeMap[typeId]) typeMap[typeId] = new Set();
-                typeMap[typeId].add(part.trim());
-            });
-        }
-    });
-}
-const selectedOptions = {};
-function matchVariant() {
-    const matched = variants.find(v => true);
-    const priceEl = document.getElementById('displayPrice');
-    const variantInput = document.getElementById('selectedVariantId');
-    if (variants.length > 0) {
-        priceEl.textContent = formatVND(variants[0].price != null ? variants[0].price : basePrice);
-        variantInput.value = variants[0].id;
+<script>
+  // Variant selection
+  const variants = /*[[${variants}]]*/ [];
+  const variantIdInput = document.getElementById('selectedVariantId');
+  const displayPrice = document.getElementById('displayPrice');
+
+  // Set first variant on load
+  (function() {
+    const opts = document.querySelectorAll('.pd-option');
+    if (opts.length > 0) {
+      const firstInput = opts[0].querySelector('input[type=radio]');
+      if (firstInput) variantIdInput.value = firstInput.value;
     }
-}
-function changeQty(delta) {
-    const input = document.getElementById('qtyInput');
-    input.value = Math.max(1, Math.min(99, parseInt(input.value || 1) + delta));
-}
-document.addEventListener('DOMContentLoaded', function() {
-    if (variants && variants.length === 1) {
-        document.getElementById('selectedVariantId').value = variants[0].id;
-        document.getElementById('displayPrice').textContent = formatVND(variants[0].price);
-    }
-});
-/*]]>*/
+  })();
+
+  function selectVariant(id, priceText, el) {
+    variantIdInput.value = id;
+    if (displayPrice) displayPrice.textContent = priceText;
+    document.querySelectorAll('.pd-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // Qty stepper
+  let qty = 1;
+  function changeQty(delta) {
+    qty = Math.max(1, Math.min(10, qty + delta));
+    document.getElementById('qtyDisplay').textContent = qty;
+    document.getElementById('qtyInput').value = qty;
+  }
+
+  function buyNow() {
+    const form = document.getElementById('addCartForm');
+    form.action = form.action; // add to cart first then redirect
+    form.submit();
+  }
 </script>
 </body>
 </html>
