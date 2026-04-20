@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${product.name} + ' — DevPro'">Product — DevPro</title>
+    <th:replace="~{layout/css :: css}" />
+    <style>
+        .variant-btn.active { background-color: var(--bs-primary) !important; color: #fff !important; border-color: var(--bs-primary) !important; }
+        .star-rating { color: #ffc107; }
+        .review-card { border-left: 3px solid var(--bs-primary); }
+    </style>
+</head>
+<body class="bg-dark text-light">
+<th:block th:replace="~{layout/header :: header}" />
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-md-5">
+            <img th:src="@{${product.imageUrl}}" class="img-fluid rounded shadow" th:alt="${product.name}" />
+        </div>
+        <div class="col-md-7">
+            <nav aria-label="breadcrumb" class="mb-2">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/marketplace}" class="text-primary">Marketplace</a></li>
+                    <li class="breadcrumb-item" th:if="${product.category != null}">
+                        <a th:href="@{/marketplace(categoryId=${product.category.id})}" th:text="${product.category.name}" class="text-primary">Category</a>
+                    </li>
+                    <li class="breadcrumb-item active text-muted" aria-current="page" th:text="${product.name}">Product</li>
+                </ol>
+            </nav>
+            <h1 class="fw-bold mb-2" th:text="${product.name}">Product Name</h1>
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="star-rating">
+                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                        <i th:class="${i <= avgRating} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
+                    </th:block>
+                </span>
+                <span class="text-muted small">(<span th:text="${#numbers.formatDecimal(avgRating, 1, 1)}">0.0</span>) · <span th:text="${reviews.size()}">0</span> review(s)</span>
+            </div>
+            <div class="mb-4">
+                <span class="text-decoration-line-through text-muted me-2"
+                      th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
+                      th:text="'₫' + ${#numbers.formatDecimal(product.originalPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                <span id="displayPrice" class="fw-bold text-primary fs-3"
+                      th:text="'₫' + ${#numbers.formatDecimal(product.salePrice, 0, 'COMMA', 0, 'POINT')}"></span>
+            </div>
+            <div th:if="${variantTypes != null and !variantTypes.empty}">
+                <div th:each="vType : ${variantTypes}" class="mb-3">
+                    <label class="fw-semibold mb-2 d-block" th:text="${vType.name}">Variant Type</label>
+                    <div class="d-flex flex-wrap gap-2" th:id="'variant-group-' + ${vType.id}"></div>
+                </div>
+            </div>
+            <form th:action="@{/cart/add}" method="post" class="mt-4">
+                <input type="hidden" name="productId" th:value="${product.id}" />
+                <input type="hidden" name="variantId" id="selectedVariantId" value="" />
+                <div class="input-group" style="max-width:220px;">
+                    <button type="button" class="btn btn-outline-secondary" onclick="changeQty(-1)">-</button>
+                    <input type="number" name="quantity" id="qtyInput" class="form-control text-center bg-secondary text-light border-0" value="1" min="1" max="99" />
+                    <button type="button" class="btn btn-outline-secondary" onclick="changeQty(1)">+</button>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg mt-3" sec:authorize="isAuthenticated()">
+                    <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                </button>
+                <a th:href="@{/auth/login}" class="btn btn-outline-primary btn-lg mt-3" sec:authorize="!isAuthenticated()">Login to Purchase</a>
+            </form>
+            <div class="mt-5" th:if="${product.description != null}">
+                <h5 class="fw-bold border-bottom border-secondary pb-2 mb-3">Description</h5>
+                <div th:utext="${product.description}" class="text-muted"></div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-5" id="reviews">
+        <h4 class="fw-bold border-bottom border-secondary pb-2 mb-4">
+            Customer Reviews <span class="badge bg-secondary ms-2" th:text="${reviews.size()}">0</span>
+        </h4>
+        <p class="text-muted" th:if="${reviews.empty}">No reviews yet. Be the first to review!</p>
+        <div th:each="review : ${reviews}" class="card bg-secondary border-0 review-card mb-3 p-3">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <span class="fw-semibold me-2" th:text="${review.user.fullName != null ? review.user.fullName : review.user.username}">Username</span>
+                    <span class="star-rating small">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <i th:class="${i <= review.rating} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
+                        </th:block>
+                    </span>
+                </div>
+                <span class="text-muted small" th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">Date</span>
+            </div>
+            <p class="mt-2 mb-0 text-light" th:text="${review.comment}"></p>
+        </div>
+        <div class="mt-4" th:if="${canReview}">
+            <h5 class="fw-bold mb-3">Write a Review</h5>
+            <form th:action="@{/review/add}" method="post">
+                <input type="hidden" name="productId" th:value="${product.id}" />
+                <div class="mb-3">
+                    <label class="form-label">Rating</label>
+                    <div class="d-flex gap-2">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="rating" th:id="'star' + ${i}" th:value="${i}" th:checked="${i == 5}" />
+                                <label class="form-check-label star-rating" th:for="'star' + ${i}" th:text="${i} + ' ★'">5 ★</label>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="reviewComment">Comment</label>
+                    <textarea id="reviewComment" name="comment" rows="3" class="form-control bg-secondary text-light border-0" placeholder="Share your experience..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-send me-1"></i> Submit Review</button>
+            </form>
+        </div>
+        <div class="alert alert-info mt-4" th:if="${!canReview}" sec:authorize="isAuthenticated()">
+            <i class="bi bi-info-circle me-1"></i> You need to purchase this product before writing a review.
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{layout/footer :: footer}" />
+<th:block th:replace="~{layout/js :: js}" />
+<script th:inline="javascript">
+/*<![CDATA[*/
+const variants = /*[[${variants}]]*/ [];
+const basePrice = /*[[${product.salePrice}]]*/ 0;
+function formatVND(amount) { return '₫' + amount.toLocaleString('vi-VN'); }
+function initVariantSelector() {
+    if (!variants || variants.length === 0) return;
+    const typeMap = {};
+    variants.forEach(v => {
+        if (v.variantLabel) {
+            const parts = v.variantLabel.split(' - ');
+            parts.forEach((part, idx) => {
+                const typeId = 'type_' + idx;
+                if (!typeMap[typeId]) typeMap[typeId] = new Set();
+                typeMap[typeId].add(part.trim());
+            });
+        }
+    });
+}
+const selectedOptions = {};
+function matchVariant() {
+    const matched = variants.find(v => true);
+    const priceEl = document.getElementById('displayPrice');
+    const variantInput = document.getElementById('selectedVariantId');
+    if (variants.length > 0) {
+        priceEl.textContent = formatVND(variants[0].price != null ? variants[0].price : basePrice);
+        variantInput.value = variants[0].id;
+    }
+}
+function changeQty(delta) {
+    const input = document.getElementById('qtyInput');
+    input.value = Math.max(1, Math.min(99, parseInt(input.value || 1) + delta));
+}
+document.addEventListener('DOMContentLoaded', function() {
+    if (variants && variants.length === 1) {
+        document.getElementById('selectedVariantId').value = variants[0].id;
+        document.getElementById('displayPrice').textContent = formatVND(variants[0].price);
+    }
+});
+/*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>DevPro Marketplace — Home</title>
+    <th:block th:replace="~{layout/css :: css}" />
+</head>
+<body class="bg-dark text-light">
+<th:block th:replace="~{layout/header :: header}" />
+
+<section class="hero-section py-5 text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Premium Digital Accounts</h1>
+        <p class="lead text-muted mb-4">Streaming · Software · Gaming · Social · and more</p>
+        <a th:href="@{/marketplace}" class="btn btn-primary btn-lg me-2">
+            <i class="bi bi-grid me-1"></i> Browse Marketplace
+        </a>
+        <a th:href="@{/auth/register}" class="btn btn-outline-light btn-lg" sec:authorize="!isAuthenticated()">
+            Sign Up Free
+        </a>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Featured Products</h2>
+            <a th:href="@{/marketplace}" class="btn btn-outline-primary btn-sm">View All <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+        <div class="text-center text-muted py-5" th:if="${featuredProducts == null or featuredProducts.empty}">
+            <i class="bi bi-box-seam fs-1"></i>
+            <p class="mt-2">No featured products yet.</p>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4" th:unless="${featuredProducts == null or featuredProducts.empty}">
+            <div class="col" th:each="product : ${featuredProducts}">
+                <div class="card h-100 bg-secondary border-0 shadow">
+                    <div class="position-relative">
+                        <img th:src="@{${product.imageUrl}}" class="card-img-top" style="height:200px; object-fit:cover;" th:alt="${product.name}" />
+                        <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">Featured</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge bg-primary mb-2 align-self-start" th:if="${product.category != null}" th:text="${product.category.name}">Category</span>
+                        <h5 class="card-title fw-bold" th:text="${product.name}">Product Name</h5>
+                        <div class="mb-3">
+                            <span class="text-decoration-line-through text-muted me-2"
+                                  th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
+                                  th:text="'₫' + ${#numbers.formatDecimal(product.originalPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                            <span class="fw-bold text-primary fs-5"
+                                  th:text="'₫' + ${#numbers.formatDecimal(product.salePrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                        </div>
+                        <a th:href="@{/product/{slug}(slug=${product.slug})}" class="btn btn-primary mt-auto">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4 bg-secondary bg-opacity-25" th:if="${categories != null and !categories.empty}">
+    <div class="container text-center">
+        <h4 class="fw-bold mb-3">Shop by Category</h4>
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+            <a th:each="cat : ${categories}" th:href="@{/marketplace(categoryId=${cat.id})}" th:text="${cat.name}" class="btn btn-outline-light btn-sm">Category</a>
+        </div>
+    </div>
+</section>
+
+<th:block th:replace="~{layout/footer :: footer}" />
+<th:block th:replace="~{layout/js :: js}" />
+</body>
+</html>

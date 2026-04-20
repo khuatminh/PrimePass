@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Marketplace — DevPro</title>
+    <th:replace="~{layout/css :: css}" />
+</head>
+<body class="bg-dark text-light">
+<th:block th:replace="~{layout/header :: header}" />
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">Marketplace</h2>
+    <form th:action="@{/marketplace}" method="get" class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control bg-secondary text-light border-0" name="keyword" placeholder="Search products..." th:value="${keyword}" />
+                <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select name="categoryId" class="form-select bg-secondary text-light border-0" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}" th:selected="${cat.id == selectedCategoryId}"></option>
+            </select>
+        </div>
+        <div class="col-md-2" th:if="${keyword != null or selectedCategoryId != null}">
+            <a th:href="@{/marketplace}" class="btn btn-outline-secondary w-100">Clear Filters</a>
+        </div>
+    </form>
+    <p class="text-muted small mb-3" th:if="${products != null}">
+        <span th:text="${totalElements}">0</span> product(s) found
+    </p>
+    <div class="text-center text-muted py-5" th:if="${products == null or products.empty}">
+        <i class="bi bi-search fs-1"></i>
+        <p class="mt-2">No products found.</p>
+    </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4" th:unless="${products == null or products.empty}">
+        <div class="col" th:each="product : ${products}">
+            <div class="card h-100 bg-secondary border-0 shadow-sm">
+                <div class="position-relative overflow-hidden">
+                    <img th:src="@{${product.imageUrl}}" class="card-img-top" style="height:180px; object-fit:cover;" th:alt="${product.name}" />
+                    <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2" th:if="${product.isFeatured}">Hot</span>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <span class="badge bg-primary mb-1 align-self-start small" th:if="${product.category != null}" th:text="${product.category.name}">Category</span>
+                    <h6 class="card-title fw-bold" th:text="${product.name}">Name</h6>
+                    <div class="mt-2">
+                        <span class="text-decoration-line-through text-muted small me-1"
+                              th:if="${product.originalPrice != null and product.originalPrice > product.salePrice}"
+                              th:text="'₫' + ${#numbers.formatDecimal(product.originalPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                        <span class="fw-bold text-primary" th:text="'₫' + ${#numbers.formatDecimal(product.salePrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                    </div>
+                    <a th:href="@{/product/{slug}(slug=${product.slug})}" class="btn btn-outline-primary btn-sm mt-3">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="mt-5" th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link bg-secondary border-0 text-light" th:href="@{/marketplace(keyword=${keyword}, categoryId=${selectedCategoryId}, page=${currentPage - 1})}">&laquo;</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link bg-secondary border-0 text-light" th:href="@{/marketplace(keyword=${keyword}, categoryId=${selectedCategoryId}, page=${i})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                <a class="page-link bg-secondary border-0 text-light" th:href="@{/marketplace(keyword=${keyword}, categoryId=${selectedCategoryId}, page=${currentPage + 1})}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<th:block th:replace="~{layout/footer :: footer}" />
+<th:block th:replace="~{layout/js :: js}" />
+</body>
+</html>
