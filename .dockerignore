@@ -1,0 +1,16 @@
+target/
+.idea/
+*.iml
+.git/
+.github/
+.vscode/
+.agent/
+.superpowers/
+docs/
+database/
+adminkit-main/
+*.html
+*.md
+images/
+css/
+node_modules/

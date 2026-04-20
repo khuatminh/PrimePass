@@ -1,5 +1,5 @@
 /* ============================================
-   PixelVault — Storefront styles
+   PrimePass — Storefront styles
    index.html + marketplace.html
    ============================================ */
 
@@ -28,7 +28,7 @@
 .product-thumb span {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 36px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.4);
 }
 .product-badges {

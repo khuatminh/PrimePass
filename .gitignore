@@ -8,3 +8,14 @@ target/
 *.iml
 .DS_Store
 marketplace-uploads/
+
+# IDE / Tools
+.vscode/
+.agent/
+.superpowers/
+docs/superpowers/
+
+# Static prototypes (not part of Spring Boot app)
+adminkit-main/
+JavaWeb34/
+css/
