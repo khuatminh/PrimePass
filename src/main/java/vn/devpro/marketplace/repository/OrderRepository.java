@@ -1,5 +1,7 @@
 package vn.devpro.marketplace.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import vn.devpro.marketplace.entity.Order;
 import vn.devpro.marketplace.entity.User;
@@ -14,4 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Optional<Order> findByVnpayTxnRef(String vnpayTxnRef);
 
     List<Order> findByUserAndStatus(User user, Order.OrderStatus status);
+
+    Page<Order> findByStatus(Order.OrderStatus status, Pageable pageable);
 }

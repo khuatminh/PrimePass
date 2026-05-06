@@ -1,6 +1,8 @@
 package vn.devpro.marketplace.controller.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -12,8 +14,6 @@ import vn.devpro.marketplace.repository.OrderItemRepository;
 import vn.devpro.marketplace.repository.OrderRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/orders")
@@ -24,16 +24,20 @@ public class AdminOrderController {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
+    private static final int PAGE_SIZE = 20;
+
     @GetMapping
-    public String list(@RequestParam(required = false) String status, Model model) {
-        List<Order> orders = orderRepository.findAll(Sort.by("createdAt").descending());
-        if (status != null && !status.isBlank()) {
-            Order.OrderStatus filterStatus = Order.OrderStatus.valueOf(status);
-            orders = orders.stream().filter(o -> o.getStatus() == filterStatus).collect(Collectors.toList());
-        }
+    public String list(@RequestParam(required = false) String status,
+                       @RequestParam(defaultValue = "0") int page,
+                       Model model) {
+        PageRequest pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdAt").descending());
+        Page<Order> orders = (status != null && !status.isBlank())
+            ? orderRepository.findByStatus(Order.OrderStatus.valueOf(status), pageable)
+            : orderRepository.findAll(pageable);
         model.addAttribute("orders", orders);
         model.addAttribute("statuses", Order.OrderStatus.values());
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("currentPage", page);
         return "admin/order/list";
     }
 

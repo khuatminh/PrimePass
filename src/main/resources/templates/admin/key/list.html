@@ -15,6 +15,9 @@
         <div th:if="${successMessage}" class="mb-4" style="background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);color:var(--success);padding:12px 16px;border-radius:var(--r-sm);font-size:14px;">
             <i class="fa-solid fa-check-circle"></i> <span th:text="${successMessage}"></span>
         </div>
+        <div th:if="${errorMessage}" class="mb-4" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--danger);padding:12px 16px;border-radius:var(--r-sm);font-size:14px;">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span th:text="${errorMessage}"></span>
+        </div>
 
         <div class="d-grid" style="grid-template-columns:1fr 380px;gap:24px;align-items:start;">
             <div>
@@ -33,14 +36,20 @@
                         <thead>
                             <tr>
                                 <th>Sản phẩm</th>
+                                <th>Variant</th>
                                 <th>Loại</th>
                                 <th>Email / Key</th>
                                 <th>Trạng thái</th>
+                                <th style="width:140px;">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="k : ${keys}">
                                 <td th:text="${k.product.name}"></td>
+                                <td style="font-size:12px;">
+                                    <span th:if="${k.variant != null}" th:text="${k.variant.variantLabel}"></span>
+                                    <span th:unless="${k.variant != null}" class="text-muted-custom">— Chung —</span>
+                                </td>
                                 <td class="font-mono" style="font-size:12px;" th:text="${k.keyType}"></td>
                                 <td class="font-mono text-muted-custom" style="font-size:12px;">
                                     <span th:if="${k.keyType.name() == 'account'}" th:text="${k.accountEmail}"></span>
@@ -48,14 +57,39 @@
                                 </td>
                                 <td>
                                     <span th:if="${k.status.name() == 'available'}" class="pill pill-success" style="font-size:11px;">Có sẵn</span>
-                                    <span th:unless="${k.status.name() == 'available'}" class="pill" style="font-size:11px;" th:text="${k.status}">-</span>
+                                    <span th:if="${k.status.name() == 'sold'}" class="pill pill-warning" style="font-size:11px;">Đã giao</span>
+                                    <span th:if="${k.status.name() == 'reserved'}" class="pill pill-accent" style="font-size:11px;">Đặt trước</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <a th:href="@{/admin/keys/edit/{id}(id=${k.id})}" class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" title="Sửa">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                        <form th:action="@{/admin/keys/delete/{id}(id=${k.id})}" method="post" style="display:inline;"
+                                              class="js-delete-key-form"
+                                              th:attr="data-key-id=${k.id},data-key-status=${k.status.name()}">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                            <button type="submit" class="btn btn-ghost" style="padding:6px 10px;font-size:12px;color:var(--danger);" title="Xóa">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             <tr th:if="${keys == null or keys.empty}">
-                                <td colspan="4" class="text-center text-muted-custom p-4">Không tìm thấy key nào.</td>
+                                <td colspan="6" class="text-center text-muted-custom p-4">Không tìm thấy key nào.</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div class="d-flex justify-content-center gap-1 mt-3" th:if="${keys.totalPages > 1}">
+                    <th:block th:each="i : ${#numbers.sequence(0, keys.totalPages - 1)}">
+                        <a style="width:36px;height:36px;border-radius:8px;display:grid;place-items:center;font-size:13px;text-decoration:none;border:1px solid var(--line);transition:all .15s;"
+                           th:href="@{/admin/keys(page=${i},productId=${selectedProductId})}"
+                           th:text="${i + 1}"
+                           th:style="${i == keys.number} ? 'background:var(--accent);border-color:var(--accent);color:#fff;' : 'background:rgba(255,255,255,.04);color:var(--text-muted);'">1</a>
+                    </th:block>
                 </div>
             </div>
 
@@ -66,9 +100,22 @@
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <div class="form-field">
                         <label>Sản phẩm *</label>
-                        <select name="productId" required>
+                        <select name="productId" id="productSelect" required onchange="filterVariants(this.value)">
                             <option value="">-- Chọn sản phẩm --</option>
-                            <option th:each="p : ${products}" th:value="${p.id}" th:text="${p.name}"></option>
+                            <option th:each="p : ${products}"
+                                    th:value="${p.id}"
+                                    th:text="${p.name}"></option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Variant (gói) — bỏ trống nếu key dùng chung cho mọi gói</label>
+                        <select name="variantId" id="variantSelect">
+                            <option value="">— Dùng chung cho sản phẩm —</option>
+                            <option th:each="v : ${variants}"
+                                    th:value="${v.id}"
+                                    th:text="${v.variantLabel}"
+                                    th:attr="data-product=${v.product.id}"
+                                    style="display:none;"></option>
                         </select>
                     </div>
                     <div class="form-field">
@@ -108,6 +155,28 @@ function toggleKeyFields(type) {
   document.getElementById('accountFields').style.display = type === 'account' ? '' : 'none';
   document.getElementById('serialFields').style.display = type === 'serial_key' ? '' : 'none';
 }
+function filterVariants(productId) {
+  const select = document.getElementById('variantSelect');
+  select.value = '';
+  Array.from(select.options).forEach(opt => {
+    if (!opt.value) return;
+    opt.style.display = opt.dataset.product === productId ? '' : 'none';
+  });
+}
+document.querySelectorAll('.js-delete-key-form').forEach(form => {
+  form.addEventListener('submit', e => {
+    const id = form.dataset.keyId;
+    const status = form.dataset.keyStatus;
+    if (status === 'sold') {
+      alert('Không thể xóa key đã giao (status = sold). Hãy đổi status hoặc cập nhật nội dung trước.');
+      e.preventDefault();
+      return;
+    }
+    if (!confirm('Xóa key #' + id + '? Hành động này không thể hoàn tác.')) {
+      e.preventDefault();
+    }
+  });
+});
 </script>
 </body>
 </html>

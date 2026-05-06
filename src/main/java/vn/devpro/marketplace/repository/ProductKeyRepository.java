@@ -1,5 +1,7 @@
 package vn.devpro.marketplace.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import vn.devpro.marketplace.entity.Product;
 import vn.devpro.marketplace.entity.ProductKey;
@@ -17,6 +19,12 @@ public interface ProductKeyRepository extends JpaRepository<ProductKey, Integer>
                                                                       ProductKey.KeyStatus status);
 
     List<ProductKey> findByProductAndStatus(Product product, ProductKey.KeyStatus status);
+
+    List<ProductKey> findByProductOrderByIdDesc(Product product);
+
+    List<ProductKey> findAllByOrderByIdDesc();
+
+    Page<ProductKey> findByProduct(Product product, Pageable pageable);
 
     List<ProductKey> findByVariantAndStatus(ProductVariant variant, ProductKey.KeyStatus status);
 
