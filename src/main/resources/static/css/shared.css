@@ -380,3 +380,56 @@ h3 { font-size: 20px; }
 /* Light mode: hiện moon icon (click → chuyển về dark) */
 :root[data-theme="light"] .theme-toggle .icon-dark { display: inline-block; }
 :root[data-theme="light"] .theme-toggle .icon-light { display: none; }
+
+/* ─── Light mode component overrides ─── */
+
+/* Navbar background: hardcoded dark bg → semi-transparent light */
+[data-theme="light"] .navbar {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Nav links hover/active: white overlay → dark overlay */
+[data-theme="light"] .nav-links a:hover,
+[data-theme="light"] .nav-links a.active {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Icon buttons hover: white overlay → dark overlay */
+[data-theme="light"] .icon-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Ghost button hover: white overlay → dark overlay */
+[data-theme="light"] .btn-ghost:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+/* Pill default: white overlay → dark overlay */
+[data-theme="light"] .pill {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Keyboard shortcut hint: white overlay → dark overlay */
+[data-theme="light"] .hero-kbd {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Scrollbar: dark track/thumb → light equivalents */
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background: var(--bg-1);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: var(--bg-3);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+/* Selection highlight: visible on light bg */
+[data-theme="light"] ::selection {
+  background: rgba(139, 124, 246, 0.20);
+  color: #1A1B1F;
+}
