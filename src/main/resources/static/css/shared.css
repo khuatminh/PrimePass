@@ -433,3 +433,8 @@ h3 { font-size: 20px; }
   background: rgba(139, 124, 246, 0.20);
   color: #1A1B1F;
 }
+
+/* Outline button hover: accent-soft is defined only for dark; explicit light value */
+[data-theme="light"] .btn-outline:hover {
+  background: rgba(107, 87, 232, 0.10);
+}
