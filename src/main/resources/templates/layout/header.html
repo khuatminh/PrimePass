@@ -58,14 +58,14 @@
             </div>
         </div>
     </nav>
+    <script>
+    function toggleTheme() {
+        var current = document.documentElement.getAttribute('data-theme') || 'dark';
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+    }
+    </script>
 </header>
-<script>
-function toggleTheme() {
-    var current = document.documentElement.getAttribute('data-theme') || 'dark';
-    var next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem('theme', next); } catch (e) {}
-}
-</script>
 </body>
 </html>
