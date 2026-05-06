@@ -33,3 +33,15 @@
 .empty-cart { text-align: center; padding: 80px 0; color: var(--text-muted); }
 .empty-cart i { font-size: 56px; margin-bottom: 20px; display: block; }
 @media(max-width:900px){ .cart-layout{grid-template-columns:1fr;} .cart-item{grid-template-columns:56px 1fr auto;} .cart-item-price,.cart-item-qty{display:none;} }
+
+/* ─── Light mode overrides ─── */
+/* .cart-item-thumb: replace hardcoded dark gradient + white rgba text */
+[data-theme="light"] .cart-item-thumb {
+  background: linear-gradient(135deg, var(--bg-2), var(--surface));
+  color: var(--text-dim);
+}
+
+/* .payment-icons span: rgba(255,255,255,.04) is invisible on light bg */
+[data-theme="light"] .payment-icons span {
+  background: var(--bg-2);
+}
