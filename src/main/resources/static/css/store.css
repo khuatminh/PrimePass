@@ -442,3 +442,95 @@
 .user-dropdown { display:none; position:absolute; right:0; top:calc(100% + 8px); background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); padding:8px; min-width:180px; z-index:200; }
 .user-dropdown a:hover,
 .user-dropdown button:hover { background:var(--surface-hi) !important; }
+
+/* ─── Light mode overrides ─── */
+
+/* Product thumb — dark gradient placeholder becomes neutral */
+[data-theme="light"] .product-thumb {
+  background: linear-gradient(135deg, #e8eaf0 0%, #d0d4de 100%);
+}
+[data-theme="light"] .product-thumb span {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+/* Social icon buttons — white overlay → dark overlay */
+[data-theme="light"] .socials a {
+  background: rgba(0, 0, 0, 0.05);
+}
+[data-theme="light"] .socials a:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Newsletter input — white overlay → neutral surface */
+[data-theme="light"] .newsletter-inline input {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Payment method badges — white overlay → dark overlay */
+[data-theme="light"] .payment-methods span {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Brand strip background */
+[data-theme="light"] .brand-strip {
+  background: rgba(0, 0, 0, 0.018);
+}
+
+/* Category cards — white overlay gradient → light surface */
+[data-theme="light"] .cat-card {
+  background: linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.01));
+}
+[data-theme="light"] .cat-arrow {
+  background: rgba(0, 0, 0, 0.07);
+}
+
+/* Tabs bar — white overlay → dark overlay */
+[data-theme="light"] .tabs {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* How-it-works cards — white overlay → light surface */
+[data-theme="light"] .how-card {
+  background: linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.01));
+}
+
+/* Testimonial cards — white overlay → light surface */
+[data-theme="light"] .testi {
+  background: linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.01));
+}
+
+/* CTA strip — dark brand gradient → light surface gradient */
+[data-theme="light"] .cta-strip {
+  background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-0) 100%);
+}
+[data-theme="light"] .cta-strip h2 {
+  color: var(--text);
+}
+
+/* Marketplace search bar — white overlay → dark overlay */
+[data-theme="light"] .mp-search {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Filter panel — white overlay → light surface */
+[data-theme="light"] .filter-panel {
+  background: linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.01));
+}
+[data-theme="light"] .cat-filter-item .count {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Toolbar — white overlay → dark overlay */
+[data-theme="light"] .toolbar {
+  background: rgba(0, 0, 0, 0.035);
+}
+
+/* Sort select — white overlay → dark overlay */
+[data-theme="light"] .sort-select {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Pagination buttons — white overlay → dark overlay */
+[data-theme="light"] .page-btn {
+  background: rgba(0, 0, 0, 0.04);
+}
