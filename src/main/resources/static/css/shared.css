@@ -43,9 +43,27 @@
   --shadow-glow-soft: 0 2px 8px rgba(0, 0, 0, 0.3);
 
   /* Type */
-  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Light mode override — kích hoạt khi <html data-theme="light"> */
+:root[data-theme="light"] {
+  --bg-0:  #FAF9F6;
+  --bg-1:  #F5F2EC;
+  --bg-2:  #EFEBE3;
+  --bg-3:  #E8E3D9;
+  --surface:    #FFFFFF;
+  --surface-hi: #FCFAF6;
+  --line:        rgba(0, 0, 0, 0.07);
+  --line-strong: rgba(0, 0, 0, 0.14);
+  --text:       #1A1B1F;
+  --text-muted: #5A5D66;
+  --text-dim:   #8A8E96;
+  --shadow-soft:      0 6px 24px rgba(0, 0, 0, 0.08);
+  --shadow-glow:      0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-glow-soft: 0 2px 8px  rgba(0, 0, 0, 0.04);
 }
 
 /* Reset */
