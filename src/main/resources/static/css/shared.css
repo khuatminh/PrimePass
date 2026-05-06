@@ -372,3 +372,11 @@ h3 { font-size: 20px; }
 .bg-bg-2 { background: var(--bg-2); }
 .border-line { border-color: var(--line) !important; }
 .border-line-strong { border-color: var(--line-strong) !important; }
+
+/* Theme toggle — hiển thị icon phù hợp theo theme hiện tại */
+/* Dark mode (default): hiện sun icon (click → chuyển sang light) */
+.theme-toggle .icon-dark { display: none; }
+.theme-toggle .icon-light { display: inline-block; }
+/* Light mode: hiện moon icon (click → chuyển về dark) */
+:root[data-theme="light"] .theme-toggle .icon-dark { display: inline-block; }
+:root[data-theme="light"] .theme-toggle .icon-light { display: none; }
