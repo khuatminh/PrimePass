@@ -59,3 +59,41 @@
 .result-card p { color: var(--text-muted); font-size: 15px; line-height: 1.6; margin-bottom: 8px; }
 .result-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 28px; }
 .order-ref { display: inline-block; padding: 6px 14px; background: var(--accent-soft); border: 1px solid rgba(139,124,246,0.3); border-radius: var(--r-sm); font-family: var(--font-mono); font-size: 13px; color: var(--accent); margin: 8px 0; }
+
+/* ─── Light mode overrides ─── */
+
+/* Thumbnail avatar: replace hardcoded dark gradient with surface token */
+[data-theme="light"] .order-item-thumb {
+  background: linear-gradient(135deg, var(--surface-hi), var(--line));
+  color: var(--text-muted);
+}
+
+/* Key card: bump background opacity so content stays readable on light bg */
+[data-theme="light"] .key-card {
+  background: rgba(74, 222, 128, 0.10);
+  border-color: rgba(74, 222, 128, 0.35);
+}
+
+/* Key value code block: ensure contrast on light bg */
+[data-theme="light"] .key-value code {
+  background: var(--bg-1);
+  color: var(--text);
+  border-color: var(--line);
+}
+
+/* Out-of-stock warning: ensure readable contrast on light bg */
+[data-theme="light"] .out-of-stock {
+  background: rgba(245, 181, 68, 0.12);
+  border-color: rgba(245, 181, 68, 0.40);
+  color: var(--warning);
+}
+
+/* Result card icons: boost opacity so tinted circles show on light bg */
+[data-theme="light"] .result-icon.success {
+  background: rgba(74, 222, 128, 0.18);
+  border-color: rgba(74, 222, 128, 0.45);
+}
+[data-theme="light"] .result-icon.failure {
+  background: rgba(240, 107, 126, 0.18);
+  border-color: rgba(240, 107, 126, 0.45);
+}
