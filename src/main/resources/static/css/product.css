@@ -65,3 +65,57 @@
 .star-picker label:hover ~ label { color: #FFB547; }
 .star-picker input:checked ~ label { color: #FFB547; }
 @media(max-width:900px){ .pd-main{grid-template-columns:1fr;} .pd-gallery{position:static;} .trust-strip{grid-template-columns:repeat(2,1fr);} .pd-buy-row{grid-template-columns:1fr;} }
+
+/* ─── Light mode overrides ─── */
+
+/* Hero image area: swap pitch-dark gradient for a soft light surface */
+[data-theme="light"] .pd-hero-img {
+  background: linear-gradient(135deg, #e8eaf0 0%, #d4d7e3 100%);
+  color: rgba(0, 0, 0, 0.25); /* placeholder letter visible but subtle */
+}
+
+/* Radial shimmer overlay: flip from white-on-dark to dark-on-light */
+[data-theme="light"] .pd-hero-img::before {
+  background: radial-gradient(circle at 30% 30%, rgba(0, 0, 0, 0.04), transparent 60%);
+}
+
+/* Trust strip: replace near-invisible white tint with a real light surface */
+[data-theme="light"] .trust-strip {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Price card: replace white-near-zero endpoint so gradient reads correctly */
+[data-theme="light"] .pd-price-card {
+  background: linear-gradient(180deg, rgba(139, 124, 246, 0.10), rgba(139, 124, 246, 0.03));
+}
+
+/* Variant option pills: invisible white tint → subtle grey fill */
+[data-theme="light"] .pd-option {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Quantity stepper background */
+[data-theme="light"] .qty-stepper {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Benefits list panel */
+[data-theme="light"] .pd-benefits {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Tab bar container */
+[data-theme="light"] .pd-tabs {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Active tab highlight: white-on-dark → grey-on-light */
+[data-theme="light"] .pd-tab.active {
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--text);
+}
+
+/* Star picker: unlit stars need a visible dark-grey on light bg */
+[data-theme="light"] .star-picker label {
+  color: #b0b4c1;
+}
