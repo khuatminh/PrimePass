@@ -9,6 +9,10 @@ target/
 .DS_Store
 marketplace-uploads/
 
+# Docker / Deploy (secrets - không commit)
+.env
+certbot/
+
 # IDE / Tools
 .vscode/
 .agent/

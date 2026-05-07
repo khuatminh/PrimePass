@@ -6,15 +6,12 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  VPS_HOST: ${{ secrets.VPS_HOST }}
-  VPS_USER: ${{ secrets.VPS_USER }}
-  VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-  DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-
 jobs:
+  # ── Job 1: Build & Test ──────────────────────────────────────────────
   build:
+    name: Build & Test
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -33,14 +30,16 @@ jobs:
         with:
           name: app-jar
           path: target/*.jar
+          retention-days: 1
 
+  # ── Job 2: Deploy (chỉ khi push lên main) ───────────────────────────
   deploy:
+    name: Deploy to VPS
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
+    steps:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
@@ -50,10 +49,27 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -i ~/.ssh/deploy_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          ssh -i ~/.ssh/deploy_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'ENDSSH'
+            set -e
             cd ${{ secrets.DEPLOY_PATH }}
+
+            echo "==> Pulling latest code..."
             git pull origin main
-            docker compose down
+
+            echo "==> Building & restarting containers..."
+            docker compose down --remove-orphans
             docker compose up -d --build
-            docker system prune -f
-          EOF
+
+            echo "==> Cleaning up old images..."
+            docker image prune -f
+
+            echo "==> Checking health..."
+            sleep 15
+            if docker compose ps | grep -q "Up"; then
+              echo "Deploy thanh cong!"
+            else
+              echo "Deploy that bai - xem logs:"
+              docker compose logs --tail=50
+              exit 1
+            fi
+          ENDSSH
