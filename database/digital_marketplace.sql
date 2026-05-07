@@ -75,6 +75,7 @@ CREATE TABLE products (
 CREATE TABLE product_keys (
     id               INT AUTO_INCREMENT PRIMARY KEY,
     product_id       INT             NOT NULL,
+    variant_id       INT             DEFAULT NULL,
     key_type         ENUM('serial_key', 'account') NOT NULL DEFAULT 'account',
     serial_key       VARCHAR(500)    DEFAULT NULL,
     account_email    VARCHAR(200)    DEFAULT NULL,
@@ -85,12 +86,28 @@ CREATE TABLE product_keys (
     created_at       DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     INDEX idx_pk_product (product_id),
+    INDEX idx_pk_variant (variant_id),
     INDEX idx_pk_status (status),
     CONSTRAINT fk_pk_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- =============================================
--- 5. PRODUCT_VARIANT_TYPES (Loại biến thể sản phẩm)
+-- 5. PRODUCT_VARIANTS (Gói / biến thể sản phẩm có giá)
+-- =============================================
+CREATE TABLE product_variants (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    product_id      INT             NOT NULL,
+    variant_label   VARCHAR(200)    NOT NULL,
+    price           BIGINT          NOT NULL,
+    stock_count     INT             NOT NULL DEFAULT 0,
+    is_active       TINYINT(1)      NOT NULL DEFAULT 1,
+
+    INDEX idx_pv_product (product_id),
+    CONSTRAINT fk_pv_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =============================================
+-- 5b. PRODUCT_VARIANT_TYPES (Loại biến thể sản phẩm)
 -- =============================================
 CREATE TABLE product_variant_types (
     id              INT AUTO_INCREMENT PRIMARY KEY,
@@ -178,6 +195,10 @@ CREATE TABLE order_items (
 -- Liên kết ngược product_keys.order_item_id -> order_items.id
 ALTER TABLE product_keys
 ADD CONSTRAINT fk_pk_order_item FOREIGN KEY (order_item_id) REFERENCES order_items(id) ON DELETE SET NULL;
+
+-- Liên kết product_keys.variant_id -> product_variants.id (NULL = key dùng chung mọi variant)
+ALTER TABLE product_keys
+ADD CONSTRAINT fk_pk_variant FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE SET NULL;
 
 -- =============================================
 -- 8. REVIEWS (Đánh giá sản phẩm)

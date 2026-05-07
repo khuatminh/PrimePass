@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="'Sửa key #' + ${key.id} + ' — Admin PrimePass'">Sửa key — Admin PrimePass</title>
+    <th:block th:replace="~{admin/layout/css :: css}" />
+</head>
+<body>
+<div class="admin-shell">
+    <th:block th:replace="~{admin/layout/sidebar :: sidebar(currentPage='keys')}" />
+    <main class="admin-main">
+        <div class="page-header d-flex align-items-center gap-3">
+            <a th:href="@{/admin/keys}" class="text-muted-custom text-decoration-none" style="font-size:14px;">
+                <i class="fa-solid fa-arrow-left"></i> Kho key
+            </a>
+            <h1 th:text="'Sửa key #' + ${key.id}">Sửa key</h1>
+            <span th:if="${key.status.name() == 'sold'}" class="pill pill-warning" style="font-size:11px;">
+                Đã giao — sửa nội dung sẽ áp dụng ngay cho user đã mua
+            </span>
+        </div>
+
+        <div style="max-width:560px;">
+            <div class="form-card">
+                <form th:action="@{/admin/keys/edit/{id}(id=${key.id})}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div class="form-field">
+                        <label>Sản phẩm *</label>
+                        <select name="productId" id="productSelect" required onchange="filterVariants(this.value)">
+                            <option th:each="p : ${products}"
+                                    th:value="${p.id}"
+                                    th:text="${p.name}"
+                                    th:selected="${p.id == key.product.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Variant (gói) — bỏ trống nếu key dùng chung cho mọi gói</label>
+                        <select name="variantId" id="variantSelect">
+                            <option value="">— Dùng chung cho sản phẩm —</option>
+                            <option th:each="v : ${variants}"
+                                    th:value="${v.id}"
+                                    th:text="${v.variantLabel}"
+                                    th:attr="data-product=${v.product.id}"
+                                    th:selected="${key.variant != null and v.id == key.variant.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Loại key</label>
+                        <select name="keyType" id="keyTypeSelect" onchange="toggleKeyFields(this.value)">
+                            <option value="account" th:selected="${key.keyType.name() == 'account'}">Tài khoản (email + mật khẩu)</option>
+                            <option value="serial_key" th:selected="${key.keyType.name() == 'serial_key'}">Serial Key</option>
+                        </select>
+                    </div>
+
+                    <div id="accountFields" th:style="${key.keyType.name() == 'account'} ? '' : 'display:none;'">
+                        <div class="form-field">
+                            <label>Email</label>
+                            <input type="text" name="accountEmail" th:value="${key.accountEmail}" placeholder="email@example.com" />
+                        </div>
+                        <div class="form-field">
+                            <label>Mật khẩu</label>
+                            <input type="text" name="accountPassword" th:value="${key.accountPassword}" placeholder="Mật khẩu tài khoản" />
+                        </div>
+                    </div>
+
+                    <div id="serialFields" th:style="${key.keyType.name() == 'serial_key'} ? '' : 'display:none;'">
+                        <div class="form-field">
+                            <label>Serial Key</label>
+                            <input type="text" name="serialKey" th:value="${key.serialKey}" placeholder="XXXX-XXXX-XXXX-XXXX" />
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Trạng thái</label>
+                        <select name="status">
+                            <option th:each="s : ${statuses}"
+                                    th:value="${s.name()}"
+                                    th:text="${s.name()}"
+                                    th:selected="${s == key.status}"></option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary justify-content-center">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
+                        </button>
+                        <a th:href="@{/admin/keys}" class="btn btn-ghost justify-content-center">Hủy</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+<th:block th:replace="~{admin/layout/js :: js}" />
+<script>
+function toggleKeyFields(type) {
+  document.getElementById('accountFields').style.display = type === 'account' ? '' : 'none';
+  document.getElementById('serialFields').style.display = type === 'serial_key' ? '' : 'none';
+}
+function filterVariants(productId) {
+  const select = document.getElementById('variantSelect');
+  Array.from(select.options).forEach(opt => {
+    if (!opt.value) return;
+    opt.style.display = opt.dataset.product === productId ? '' : 'none';
+    if (opt.dataset.product !== productId && opt.selected) opt.selected = false;
+  });
+}
+filterVariants(document.getElementById('productSelect').value);
+</script>
+</body>
+</html>

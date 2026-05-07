@@ -197,7 +197,7 @@ h3 { font-size: 20px; }
 .nav-inner {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 200px;
   height: 64px;
   max-width: 1320px;
   margin: 0 auto;
@@ -235,9 +235,11 @@ h3 { font-size: 20px; }
 }
 .brand-name { line-height: 1; }
 .nav-links {
+  margin-top: 15px;
   display: flex;
-  align-items: center;
-  gap: 2px;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 5px;
   list-style: none;
   flex: 1;
 }

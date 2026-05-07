@@ -73,11 +73,26 @@
           <span class="value" th:text="'₫' + ${#numbers.formatDecimal(cart.totalPrice, 0, 'COMMA', 0, 'POINT')}">₫0</span>
         </div>
 
-        <form th:action="@{/order/create}" method="post" class="mt-3">
+        <!-- Cart error (coupon invalid, etc.) -->
+        <div th:if="${cartError}" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;">
+          <i class="fa-solid fa-triangle-exclamation"></i> <span th:text="${cartError}"></span>
+        </div>
+
+        <form th:action="@{/order/create}" method="post" class="mt-3" id="checkoutForm">
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
           <div class="coupon-row">
-            <input type="text" name="couponCode" placeholder="Mã giảm giá (nếu có)" />
-            <button type="button" class="btn btn-ghost text-nowrap" style="font-size:13px;">Áp dụng</button>
+            <input type="text" id="couponCodeInput" name="couponCode" placeholder="Mã giảm giá (nếu có)" autocomplete="off" />
+            <button type="button" class="btn btn-ghost text-nowrap" style="font-size:13px;" onclick="applyCoupon()">Áp dụng</button>
+          </div>
+          <div id="couponFeedback" style="font-size:13px;margin-top:6px;display:none;"></div>
+
+          <div id="discountRow" style="display:none;justify-content:space-between;font-size:13px;color:var(--success);margin-top:8px;">
+            <span>Giảm giá</span>
+            <span id="discountAmount"></span>
+          </div>
+          <div id="finalAmountRow" style="display:none;justify-content:space-between;font-size:14px;font-weight:600;margin-top:4px;">
+            <span>Tổng sau giảm</span>
+            <span id="finalAmount"></span>
           </div>
 
           <div class="payment-icons">
@@ -101,5 +116,49 @@
 
 <th:block th:replace="~{layout/footer :: footer}" />
 <th:block th:replace="~{layout/js :: js}" />
+<script th:inline="javascript">
+const csrfToken = /*[[${_csrf.token}]]*/ '';
+const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+
+function fmt(n) {
+  return '₫' + Number(n).toLocaleString('vi-VN');
+}
+
+function applyCoupon() {
+  const code = document.getElementById('couponCodeInput').value.trim();
+  const feedback = document.getElementById('couponFeedback');
+  if (!code) { feedback.style.display = 'none'; return; }
+
+  fetch('/cart/validate-coupon?code=' + encodeURIComponent(code), {
+    headers: { [csrfHeader]: csrfToken }
+  })
+  .then(r => r.json())
+  .then(data => {
+    feedback.style.display = 'block';
+    if (data.valid) {
+      feedback.style.color = 'var(--success)';
+      feedback.innerHTML = '<i class="fa-solid fa-check"></i> ' + data.message;
+      document.getElementById('discountRow').style.display = 'flex';
+      document.getElementById('discountAmount').textContent = '-' + fmt(data.discount);
+      document.getElementById('finalAmountRow').style.display = 'flex';
+      document.getElementById('finalAmount').textContent = fmt(data.finalAmount);
+    } else {
+      feedback.style.color = '#ef4444';
+      feedback.innerHTML = '<i class="fa-solid fa-xmark"></i> ' + data.message;
+      document.getElementById('discountRow').style.display = 'none';
+      document.getElementById('finalAmountRow').style.display = 'none';
+    }
+  })
+  .catch(() => {
+    feedback.style.display = 'block';
+    feedback.style.color = '#ef4444';
+    feedback.textContent = 'Không thể kiểm tra mã. Vui lòng thử lại.';
+  });
+}
+
+document.getElementById('couponCodeInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); }
+});
+</script>
 </body>
 </html>

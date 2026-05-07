@@ -24,11 +24,12 @@ public class KeyDeliveryService {
         List<OrderItem> items = orderItemRepository.findByOrder(order);
         for (OrderItem item : items) {
             for (int i = 0; i < item.getQuantity(); i++) {
-                Optional<ProductKey> keyOpt;
+                Optional<ProductKey> keyOpt = Optional.empty();
                 if (item.getVariant() != null) {
                     keyOpt = productKeyRepository.findFirstByVariantAndStatus(
                         item.getVariant(), ProductKey.KeyStatus.available);
-                } else {
+                }
+                if (keyOpt.isEmpty()) {
                     keyOpt = productKeyRepository.findFirstByProductAndVariantIsNullAndStatus(
                         item.getProduct(), ProductKey.KeyStatus.available);
                 }

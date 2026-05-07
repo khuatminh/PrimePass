@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Danh Mục | Admin</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap-override.css}" href="./css/bootstrap-override.css" />
+
+    <style>
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--bs-secondary);
+            border-right: 1px solid #4a4a4a;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            background-color: var(--bs-body-bg);
+        }
+
+        .admin-nav-link {
+            color: #858584;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 10px;
+            margin: 0 10px 5px;
+            transition: all 0.3s;
+        }
+
+        .admin-nav-link:hover,
+        .admin-nav-link.active {
+            background-color: var(--bs-primary);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body class="text-white">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar d-flex flex-column py-4">
+        <div class="px-4 mb-4 text-center">
+            <a class="navbar-brand d-flex align-items-center justify-content-center gap-2" th:href="@{/}"
+                href="index.html">
+                <i class="fa-solid fa-store" style="color: var(--bs-primary); font-size: 28px;"></i>
+                <span class="fs-4 fw-bold text-white">Digital Store</span>
+            </a>
+            <div class="badge bg-primary mt-2 rounded-pill px-3 py-1">Quản Trị Viên</div>
+        </div>
+
+        <nav class="flex-grow-1 mt-3">
+            <ul class="list-unstyled mb-0">
+                <li><a th:href="@{/admin}" href="admin.html" class="admin-nav-link"
+                        th:classappend="${activePage == 'dashboard'} ? 'active' : ''"><i class="fa-solid fa-chart-line"
+                            style="width:20px;"></i> Thống Kê</a></li>
+                <li class="px-4 pt-3 pb-2 text-gray text-uppercase small fw-bold">Quản Lý Shop</li>
+                <li><a th:href="@{/admin/products}" href="#" class="admin-nav-link"
+                        th:classappend="${activePage == 'products'} ? 'active' : ''"><i class="fa-solid fa-box"
+                            style="width:20px;"></i> Sản Phẩm</a></li>
+                <li><a th:href="@{/admin/categories}" href="admin-categories.html" class="admin-nav-link"
+                        th:classappend="${activePage == 'categories'} ? 'active' : ''"><i
+                            class="fa-solid fa-layer-group" style="width:20px;"></i> Danh Mục</a></li>
+                <li><a th:href="@{/admin/keys}" href="#" class="admin-nav-link"
+                        th:classappend="${activePage == 'keys'} ? 'active' : ''"><i class="fa-regular fa-file-code"
+                            style="width:20px;"></i> Kho Khóa/Serial</a></li>
+                <li class="px-4 pt-3 pb-2 text-gray text-uppercase small fw-bold">Khách Hàng</li>
+                <li><a th:href="@{/admin/users}" href="#" class="admin-nav-link"
+                        th:classappend="${activePage == 'users'} ? 'active' : ''"><i class="fa-solid fa-users"
+                            style="width:20px;"></i> Cộng Đồng</a></li>
+                <li><a th:href="@{/admin/orders}" href="#" class="admin-nav-link"
+                        th:classappend="${activePage == 'orders'} ? 'active' : ''"><i
+                            class="fa-solid fa-file-invoice-dollar" style="width:20px;"></i> Giao Dịch</a></li>
+            </ul>
+        </nav>
+
+        <div class="px-4 mt-auto">
+            <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: rgba(0,0,0,0.2);">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=A259FF&color=fff&rounded=true" width="40"
+                    height="40" alt="Admin">
+                <div>
+                    <h6 class="mb-0 fw-bold fs-6">Admin Root</h6>
+                    <small class="text-gray">Online</small>
+                </div>
+                <a href="sign-up.html" class="ms-auto text-gray hover-white text-decoration-none"><i
+                        class="fa-solid fa-right-from-bracket"></i></a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <header class="px-4 py-3 bg-secondary d-flex justify-content-between align-items-center shadow-sm sticky-top"
+            style="border-bottom: 1px solid #4a4a4a;">
+            <div>
+                <h5 class="fw-bold mb-0 text-white">Quản Lý Danh Mục</h5>
+                <small class="text-gray">Thêm, sửa, xóa các danh mục sản phẩm</small>
+            </div>
+            <button class="btn btn-primary rounded-pill px-4 fw-bold" data-bs-toggle="modal"
+                data-bs-target="#addCategoryModal">
+                <i class="fa-solid fa-plus me-2"></i> Thêm Danh Mục
+            </button>
+        </header>
+
+        <div class="container-fluid p-4 p-lg-5">
+
+            <!-- SUMMARY STATS -->
+            <div class="row g-4 mb-5">
+                <div class="col-sm-6 col-xl-4">
+                    <div class="card bg-secondary border-0 p-4 shadow d-flex flex-row align-items-center gap-3"
+                        style="border-radius: 20px;">
+                        <div class="bg-primary bg-opacity-25 p-3 rounded-circle text-primary">
+                            <i class="fa-solid fa-layer-group fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray fw-semibold mb-1 small">TỔNG DANH MỤC</p>
+                            <!-- Thymeleaf: đổ tổng số danh mục -->
+                            <h3 class="fw-bold text-white font-mono mb-0" th:text="${totalCategories}">6</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-4">
+                    <div class="card bg-secondary border-0 p-4 shadow d-flex flex-row align-items-center gap-3"
+                        style="border-radius: 20px;">
+                        <div class="bg-success bg-opacity-25 p-3 rounded-circle text-success">
+                            <i class="fa-solid fa-toggle-on fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray fw-semibold mb-1 small">ĐANG HOẠT ĐỘNG</p>
+                            <h3 class="fw-bold text-white font-mono mb-0" th:text="${activeCategories}">6</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-4">
+                    <div class="card bg-secondary border-0 p-4 shadow d-flex flex-row align-items-center gap-3"
+                        style="border-radius: 20px;">
+                        <div class="bg-info bg-opacity-25 p-3 rounded-circle text-info">
+                            <i class="fa-solid fa-box fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray fw-semibold mb-1 small">TỔNG SẢN PHẨM</p>
+                            <h3 class="fw-bold text-white font-mono mb-0" th:text="${totalProducts}">9</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUCCESS / ERROR MESSAGES (Thymeleaf Flash) -->
+            <div th:if="${successMessage}" class="alert alert-success rounded-pill text-center fw-semibold"
+                role="alert">
+                <i class="fa-solid fa-circle-check me-2"></i> <span th:text="${successMessage}"></span>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger rounded-pill text-center fw-semibold" role="alert">
+                <i class="fa-solid fa-circle-xmark me-2"></i> <span th:text="${errorMessage}"></span>
+            </div>
+
+            <!-- CATEGORIES TABLE -->
+            <div class="card rounded-4 border-0 bg-secondary shadow">
+                <div
+                    class="card-header border-bottom border-dark bg-transparent p-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-white">Danh Sách Danh Mục</h5>
+                    <div class="position-relative" style="width: 250px;">
+                        <input type="text" class="form-control border-0 text-white shadow-none ps-4"
+                            placeholder="Tìm danh mục..." style="background: #2b2b2b; border-radius: 20px;"
+                            id="searchInput">
+                        <i class="fa-solid fa-search position-absolute text-gray"
+                            style="top:50%; transform:translateY(-50%); left:12px;"></i>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table text-white mb-0 align-middle" style="--bs-table-bg: transparent;"
+                            id="categoriesTable">
+                            <thead class="text-gray small font-mono">
+                                <tr class="border-bottom border-dark">
+                                    <th class="ps-4 py-3 fw-normal" style="width:60px">#</th>
+                                    <th class="py-3 fw-normal">ICON</th>
+                                    <th class="py-3 fw-normal">TÊN DANH MỤC</th>
+                                    <th class="py-3 fw-normal">SLUG</th>
+                                    <th class="py-3 fw-normal text-center">SỐ SP</th>
+                                    <th class="py-3 fw-normal text-center">THỨ TỰ</th>
+                                    <th class="py-3 fw-normal text-center">TRẠNG THÁI</th>
+                                    <th class="pe-4 py-3 fw-normal text-end">THAO TÁC</th>
+                                </tr>
+                            </thead>
+                            <tbody class="border-top-0">
+                                <!-- ===== THYMELEAF LOOP: categories from Controller ===== -->
+                                <tr th:each="cat, iterStat : ${categories}" class="border-bottom border-dark">
+                                    <td class="ps-4 text-gray font-mono" th:text="${iterStat.index + 1}">1</td>
+                                    <td>
+                                        <img th:src="${cat.iconUrl}"
+                                            src="https://img.icons8.com/color/48/netflix-desktop-app.png"
+                                            style="width: 36px; height: 36px; object-fit: contain; background:#202020; border-radius:8px; padding:4px"
+                                            th:alt="${cat.name}" alt="Icon">
+                                    </td>
+                                    <td class="fw-bold text-white" th:text="${cat.name}">Giải Trí &amp; Phim Ảnh</td>
+                                    <td class="text-primary font-mono small" th:text="${cat.slug}">giai-tri-phim-anh
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-primary rounded-pill px-3"
+                                            th:text="${cat.productCount} + ' SP'">5 SP</span>
+                                    </td>
+                                    <td class="text-center text-gray font-mono" th:text="${cat.sortOrder}">1</td>
+                                    <td class="text-center">
+                                        <span th:if="${cat.isActive}"
+                                            class="badge bg-success rounded-pill px-3 fw-normal">Hoạt động</span>
+                                        <span th:unless="${cat.isActive}"
+                                            class="badge bg-secondary rounded-pill px-3 fw-normal border">Ẩn</span>
+                                    </td>
+                                    <td class="pe-4 text-end">
+                                        <a th:href="@{/admin/categories/edit/{id}(id=${cat.id})}"
+                                            class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1"
+                                            title="Chỉnh sửa">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a th:href="@{/admin/categories/delete/{id}(id=${cat.id})}"
+                                            class="btn btn-sm btn-outline-danger rounded-pill px-3" title="Xóa"
+                                            onclick="return confirm('Bạn chắc chắn muốn xóa danh mục này?');">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <!-- ===== STATIC FALLBACK (khi không chạy Thymeleaf) ===== -->
+                                <!--/*-->
+                                <tr class="border-bottom border-dark">
+                                    <td class="ps-4 text-gray font-mono">1</td>
+                                    <td><img src="https://img.icons8.com/color/48/netflix-desktop-app.png"
+                                            style="width: 36px; height: 36px; object-fit: contain; background:#202020; border-radius:8px; padding:4px">
+                                    </td>
+                                    <td class="fw-bold text-white">Giải Trí &amp; Phim Ảnh</td>
+                                    <td class="text-primary font-mono small">giai-tri-phim-anh</td>
+                                    <td class="text-center"><span class="badge bg-primary rounded-pill px-3">3 SP</span>
+                                    </td>
+                                    <td class="text-center text-gray font-mono">1</td>
+                                    <td class="text-center"><span
+                                            class="badge bg-success rounded-pill px-3 fw-normal">Hoạt động</span></td>
+                                    <td class="pe-4 text-end">
+                                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1"><i
+                                                class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i
+                                                class="fa-solid fa-trash-can"></i></a>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom border-dark">
+                                    <td class="ps-4 text-gray font-mono">2</td>
+                                    <td><img src="https://img.icons8.com/color/48/spotify--v1.png"
+                                            style="width: 36px; height: 36px; object-fit: contain; background:#202020; border-radius:8px; padding:4px">
+                                    </td>
+                                    <td class="fw-bold text-white">Âm Nhạc</td>
+                                    <td class="text-primary font-mono small">am-nhac</td>
+                                    <td class="text-center"><span class="badge bg-primary rounded-pill px-3">2 SP</span>
+                                    </td>
+                                    <td class="text-center text-gray font-mono">2</td>
+                                    <td class="text-center"><span
+                                            class="badge bg-success rounded-pill px-3 fw-normal">Hoạt động</span></td>
+                                    <td class="pe-4 text-end">
+                                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1"><i
+                                                class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i
+                                                class="fa-solid fa-trash-can"></i></a>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom border-dark">
+                                    <td class="ps-4 text-gray font-mono">3</td>
+                                    <td><img src="https://img.icons8.com/fluency/48/canva.png"
+                                            style="width: 36px; height: 36px; object-fit: contain; background:#202020; border-radius:8px; padding:4px">
+                                    </td>
+                                    <td class="fw-bold text-white">Thiết Kế &amp; Làm Việc</td>
+                                    <td class="text-primary font-mono small">thiet-ke-lam-viec</td>
+                                    <td class="text-center"><span class="badge bg-primary rounded-pill px-3">2 SP</span>
+                                    </td>
+                                    <td class="text-center text-gray font-mono">3</td>
+                                    <td class="text-center"><span
+                                            class="badge bg-success rounded-pill px-3 fw-normal">Hoạt động</span></td>
+                                    <td class="pe-4 text-end">
+                                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1"><i
+                                                class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i
+                                                class="fa-solid fa-trash-can"></i></a>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom border-dark">
+                                    <td class="ps-4 text-gray font-mono">4</td>
+                                    <td><img src="https://img.icons8.com/fluency/48/duolingo-logo.png"
+                                            style="width: 36px; height: 36px; object-fit: contain; background:#202020; border-radius:8px; padding:4px">
+                                    </td>
+                                    <td class="fw-bold text-white">Giáo Dục &amp; Học Tập</td>
+                                    <td class="text-primary font-mono small">giao-duc-hoc-tap</td>
+                                    <td class="text-center"><span class="badge bg-primary rounded-pill px-3">1 SP</span>
+                                    </td>
+                                    <td class="text-center text-gray font-mono">4</td>
+                                    <td class="text-center"><span
+                                            class="badge bg-success rounded-pill px-3 fw-normal">Hoạt động</span></td>
+                                    <td class="pe-4 text-end">
+                                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1"><i
+                                                class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i
+                                                class="fa-solid fa-trash-can"></i></a>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom border-dark">
+                                    <td class="ps-4 text-gray font-mono">5</td>
+                                    <td><img src="https://img.icons8.com/color/48/steam.png"
+                                            style="width: 36px; height: 36px; object-fit: contain; background:#202020; border-radius:8px; padding:4px">
+                                    </td>
+                                    <td class="fw-bold text-white">Tài Khoản Game</td>
+                                    <td class="text-primary font-mono small">tai-khoan-game</td>
+                                    <td class="text-center"><span class="badge bg-primary rounded-pill px-3">1 SP</span>
+                                    </td>
+                                    <td class="text-center text-gray font-mono">5</td>
+                                    <td class="text-center"><span
+                                            class="badge bg-success rounded-pill px-3 fw-normal">Hoạt động</span></td>
+                                    <td class="pe-4 text-end">
+                                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1"><i
+                                                class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i
+                                                class="fa-solid fa-trash-can"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4 text-gray font-mono">6</td>
+                                    <td><img src="https://img.icons8.com/fluency/48/chatgpt.png"
+                                            style="width: 36px; height: 36px; object-fit: contain; background:#202020; border-radius:8px; padding:4px">
+                                    </td>
+                                    <td class="fw-bold text-white">Công Nghệ &amp; AI</td>
+                                    <td class="text-primary font-mono small">cong-nghe-ai</td>
+                                    <td class="text-center"><span class="badge bg-primary rounded-pill px-3">1 SP</span>
+                                    </td>
+                                    <td class="text-center text-gray font-mono">6</td>
+                                    <td class="text-center"><span
+                                            class="badge bg-success rounded-pill px-3 fw-normal">Hoạt động</span></td>
+                                    <td class="pe-4 text-end">
+                                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1"><i
+                                                class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i
+                                                class="fa-solid fa-trash-can"></i></a>
+                                    </td>
+                                </tr>
+                                <!--*/-->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ===== MODAL: THÊM DANH MỤC ===== -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-secondary border-0 text-white" style="border-radius: 20px;">
+                <div class="modal-header border-bottom border-dark px-4 pt-4">
+                    <h5 class="modal-title fw-bold" id="addCategoryLabel">
+                        <i class="fa-solid fa-layer-group text-primary me-2"></i> Thêm Danh Mục Mới
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white shadow-none"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Thymeleaf form action -->
+                <form th:action="@{/admin/categories/add}" action="#" method="POST">
+                    <div class="modal-body px-4 py-4">
+                        <div class="mb-4">
+                            <label class="form-label text-gray fw-semibold small">TÊN DANH MỤC <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" placeholder="Ví dụ: Giải Trí & Phim Ảnh"
+                                required style="border-radius: 12px; height: 50px;">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-gray fw-semibold small">SLUG (URL thân thiện)</label>
+                            <input type="text" class="form-control" name="slug"
+                                placeholder="vd: giai-tri-phim-anh (tự tạo nếu bỏ trống)"
+                                style="border-radius: 12px; height: 50px;">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-gray fw-semibold small">ICON URL</label>
+                            <input type="text" class="form-control" name="iconUrl"
+                                placeholder="https://img.icons8.com/color/48/..."
+                                style="border-radius: 12px; height: 50px;">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-gray fw-semibold small">MÔ TẢ</label>
+                            <textarea class="form-control" name="description" rows="3"
+                                placeholder="Mô tả ngắn gọn về danh mục..." style="border-radius: 12px;"></textarea>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="form-label text-gray fw-semibold small">THỨ TỰ HIỂN THỊ</label>
+                                <input type="number" class="form-control" name="sortOrder" value="0" min="0"
+                                    style="border-radius: 12px; height: 50px;">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-gray fw-semibold small">TRẠNG THÁI</label>
+                                <select class="form-select text-white shadow-none" name="isActive"
+                                    style="background-color: #3B3B3B; border-radius: 12px; height: 50px; border-color: #858584;">
+                                    <option value="1" selected>Hoạt động</option>
+                                    <option value="0">Ẩn</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top border-dark px-4 pb-4">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4 text-white"
+                            data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold">
+                            <i class="fa-solid fa-plus me-2"></i> Lưu Danh Mục
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: SỬA DANH MỤC ===== -->
+    <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-secondary border-0 text-white" style="border-radius: 20px;">
+                <div class="modal-header border-bottom border-dark px-4 pt-4">
+                    <h5 class="modal-title fw-bold" id="editCategoryLabel">
+                        <i class="fa-solid fa-pen-to-square text-primary me-2"></i> Chỉnh Sửa Danh Mục
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white shadow-none"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Thymeleaf: pre-fill dữ liệu danh mục cần sửa -->
+                <form th:action="@{/admin/categories/update}" th:object="${editCategory}" action="#" method="POST">
+                    <input type="hidden" th:field="*{id}" name="id" />
+                    <div class="modal-body px-4 py-4">
+                        <div class="mb-4">
+                            <label class="form-label text-gray fw-semibold small">TÊN DANH MỤC <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{name}" name="name" required
+                                style="border-radius: 12px; height: 50px;">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-gray fw-semibold small">SLUG</label>
+                            <input type="text" class="form-control" th:field="*{slug}" name="slug"
+                                style="border-radius: 12px; height: 50px;">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-gray fw-semibold small">ICON URL</label>
+                            <input type="text" class="form-control" th:field="*{iconUrl}" name="iconUrl"
+                                style="border-radius: 12px; height: 50px;">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-gray fw-semibold small">MÔ TẢ</label>
+                            <textarea class="form-control" th:field="*{description}" name="description" rows="3"
+                                style="border-radius: 12px;"></textarea>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="form-label text-gray fw-semibold small">THỨ TỰ</label>
+                                <input type="number" class="form-control" th:field="*{sortOrder}" name="sortOrder"
+                                    style="border-radius: 12px; height: 50px;">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-gray fw-semibold small">TRẠNG THÁI</label>
+                                <select class="form-select text-white shadow-none" th:field="*{isActive}"
+                                    name="isActive"
+                                    style="background-color: #3B3B3B; border-radius: 12px; height: 50px; border-color: #858584;">
+                                    <option value="1">Hoạt động</option>
+                                    <option value="0">Ẩn</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top border-dark px-4 pb-4">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4 text-white"
+                            data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold">
+                            <i class="fa-solid fa-floppy-disk me-2"></i> Cập Nhật
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Client-side search filter
+        document.getElementById('searchInput').addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#categoriesTable tbody tr');
+            rows.forEach(row => {
+                const name = row.querySelector('td:nth-child(3)');
+                if (name) {
+                    row.style.display = name.textContent.toLowerCase().includes(filter) ? '' : 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

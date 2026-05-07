@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang Chủ | Tài Khoản Bản Quyền</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/bootstrap-override.css" />
+</head>
+
+<body class="pt-5 mt-5">
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg fixed-top shadow" style="background-color: var(--bs-body-bg); padding: 20px 0;">
+    <div class="container pb-0">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+        <i class="fa-solid fa-store" style="color: var(--bs-primary); font-size: 28px;"></i>
+        <span class="fs-4 fw-bold text-white">Digital Marketplace</span>
+      </a>
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navMenu">
+        <i class="fa-solid fa-bars text-white"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold">
+          <li class="nav-item px-3"><a class="nav-link text-primary" href="index.html">Trang Chủ</a></li>
+          <li class="nav-item px-3"><a class="nav-link text-white" href="marketplace.html">Cửa Hàng</a></li>
+          <li class="nav-item px-3"><a class="nav-link text-white" href="#">Bảng Xếp Hạng</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-3">
+          <a href="cart.html" class="nav-link text-white fs-5" aria-label="Xem giỏ hàng"><i class="fa-solid fa-cart-shopping"></i></a>
+          <a href="sign-up.html" class="btn btn-primary d-flex align-items-center gap-2 px-4 rounded-pill">
+            <i class="fa-regular fa-user"></i> Đăng nhập
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="py-5">
+    <div class="container py-5">
+      <div class="row g-5 align-items-center">
+        <!-- Text Left -->
+        <div class="col-lg-6 pe-xl-5">
+          <h1 class="display-4 fw-bold mb-4" style="line-height: 1.2;">Khám Phá Tài Khoản Phim & Giải Trí Chính Hãng
+          </h1>
+          <p class="fs-5 text-white fw-light mb-4 pb-2" style="font-size: 20px;">
+            Hệ thống cung cấp tài khoản Netflix Premium, Youtube, Spotify, Canva giá rẻ, bảo hành trọn đời, hỗ trợ tức
+            thì 24/7.
+          </p>
+          <a href="marketplace.html" class="btn btn-primary btn-lg rounded-pill px-5 fs-6 py-3 fw-bold mb-5 me-3">
+            <i class="fa-solid fa-rocket me-2"></i> Bắt đầu khám phá
+          </a>
+
+          <div class="d-flex gap-5 font-mono">
+            <div>
+              <p class="display-6 fw-bold mb-0">12K+</p>
+              <p class="text-white fw-light fs-5">Tài Khoản Bán Xong</p>
+            </div>
+            <div>
+              <p class="display-6 fw-bold mb-0">100+</p>
+              <p class="text-white fw-light fs-5">Dịch vụ nền tảng</p>
+            </div>
+            <div>
+              <p class="display-6 fw-bold mb-0">5K+</p>
+              <p class="text-white fw-light fs-5">Khách Hàng</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image Right (Big Card) -->
+        <div class="col-lg-6">
+          <div class="card bg-secondary border-0 mx-auto shadow-lg" style="max-width: 500px;">
+            <div style="background-color: #202020;" class="p-5 text-center">
+              <img src="https://img.icons8.com/color/480/netflix-desktop-app.png" alt="Netflix Premium"
+                class="img-fluid" style="height: 300px; object-fit: contain;">
+            </div>
+            <div class="card-body p-4 border-top border-dark d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center gap-3">
+                <div
+                  class="bg-primary text-white d-flex align-items-center justify-content-center rounded-circle fw-bold"
+                  style="width: 50px; height: 50px;">
+                  S1
+                </div>
+                <div>
+                  <h5 class="fw-bold mb-1 text-white">Netflix Premium 4K</h5>
+                  <p class="text-gray mb-0">Tốt nhất hệ thống</p>
+                </div>
+              </div>
+              <div class="text-end">
+                <p class="text-gray mb-0 small">Giá ưu đãi</p>
+                <h5 class="font-mono text-white mb-0 mt-1 fw-bold">99.000₫</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="py-5 bg-secondary">
+    <div class="container py-5">
+      <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+          <h3 class="display-6 fw-bold mb-2">Danh Mục Nổi Bật</h3>
+          <p class="text-white fs-5 fw-light mb-0">Lựa chọn các dịch vụ uy tín nhất</p>
+        </div>
+        <a href="marketplace.html" class="btn btn-outline-primary rounded-pill px-4">Xem tất cả</a>
+      </div>
+
+      <div class="row g-4 text-center">
+        <!-- Cat 1 -->
+        <div class="col-6 col-md-4 col-xl-2">
+          <a href="marketplace.html" class="card h-100 text-decoration-none border-0 shadow-sm category-item"
+            style="background:#202020 !important; border-radius: 20px;">
+            <div class="card-body p-4">
+              <img src="https://img.icons8.com/color/48/netflix-desktop-app.png" alt="Netflix" class="mb-3"
+                style="width:48px;">
+              <h6 class="text-white mb-0 fw-bold">Xem Phim</h6>
+            </div>
+          </a>
+        </div>
+        <!-- Cat 2 -->
+        <div class="col-6 col-md-4 col-xl-2">
+          <a href="marketplace.html" class="card h-100 text-decoration-none border-0 shadow-sm category-item"
+            style="background:#202020 !important; border-radius: 20px;">
+            <div class="card-body p-4">
+              <img src="https://img.icons8.com/color/48/spotify--v1.png" alt="Spotify" class="mb-3" style="width:48px;">
+              <h6 class="text-white mb-0 fw-bold">Âm Nhạc</h6>
+            </div>
+          </a>
+        </div>
+        <!-- Cat 3 -->
+        <div class="col-6 col-md-4 col-xl-2">
+          <a href="marketplace.html" class="card h-100 text-decoration-none border-0 shadow-sm category-item"
+            style="background:#202020 !important; border-radius: 20px;">
+            <div class="card-body p-4">
+              <img src="https://img.icons8.com/fluency/48/canva.png" alt="Canva" class="mb-3" style="width:48px;">
+              <h6 class="text-white mb-0 fw-bold">Thiết Kế</h6>
+            </div>
+          </a>
+        </div>
+        <!-- Cat 4 -->
+        <div class="col-6 col-md-4 col-xl-2">
+          <a href="marketplace.html" class="card h-100 text-decoration-none border-0 shadow-sm category-item"
+            style="background:#202020 !important; border-radius: 20px;">
+            <div class="card-body p-4">
+              <img src="https://img.icons8.com/fluency/48/duolingo-logo.png" alt="Duolingo" class="mb-3"
+                style="width:48px;">
+              <h6 class="text-white mb-0 fw-bold">Học Tập</h6>
+            </div>
+          </a>
+        </div>
+        <!-- Cat 5 -->
+        <div class="col-6 col-md-4 col-xl-2">
+          <a href="marketplace.html" class="card h-100 text-decoration-none border-0 shadow-sm category-item"
+            style="background:#202020 !important; border-radius: 20px;">
+            <div class="card-body p-4">
+              <img src="https://img.icons8.com/color/48/steam.png" alt="Steam" class="mb-3" style="width:48px;">
+              <h6 class="text-white mb-0 fw-bold">Chơi Game</h6>
+            </div>
+          </a>
+        </div>
+        <!-- Cat 6 -->
+        <div class="col-6 col-md-4 col-xl-2">
+          <a href="marketplace.html" class="card h-100 text-decoration-none border-0 shadow-sm category-item"
+            style="background:#202020 !important; border-radius: 20px;">
+            <div class="card-body p-4">
+              <img src="https://img.icons8.com/color/48/adobe-creative-cloud.png" alt="Adobe" class="mb-3"
+                style="width:48px;">
+              <h6 class="text-white mb-0 fw-bold">Làm Việc</h6>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOT PRODUCTS -->
+  <section class="py-5 mt-5">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+          <h3 class="display-6 fw-bold mb-2">Tài Khoản Bán Chạy</h3>
+          <p class="text-white fs-5 fw-light mb-0">Cập nhật xu hướng nổi bật tuần này</p>
+        </div>
+        <a href="marketplace.html" class="btn btn-outline-primary rounded-pill px-4">Tất cả sản phẩm</a>
+      </div>
+
+      <div class="row g-4 mb-5">
+        <!-- Product 1: Netflix -->
+        <div class="col-md-6 col-xl-4">
+          <div class="card h-100 position-relative border-0 shadow-lg" style="border-radius:20px;">
+            <span class="badge bg-danger position-absolute top-0 start-0 m-3 py-1 px-2"
+              style="z-index: 2;-webkit-border-radius: 8px;">GIẢM GIÁ</span>
+            <div class="p-4 bg-dark text-center"
+              style="background:#202020 !important; border-top-left-radius:20px; border-top-right-radius:20px">
+              <img src="https://img.icons8.com/color/150/netflix-desktop-app.png" alt="Netflix" class="img-fluid"
+                style="height: 120px; object-fit: contain;">
+            </div>
+            <div class="card-body p-4 d-flex flex-column" style="background-color: #3B3B3B;">
+              <h5 class="card-title fw-semibold text-white mb-2" style="font-size: 18px;">Tài Khoản Netflix Premium 4K -
+                1 Tháng</h5>
+              <p class="text-gray mb-3 small">Cấp sẵn profile riêng, sử dụng trên smart TV, điện thoại, máy tính.</p>
+              <div class="mt-auto pt-3 d-flex justify-content-between align-items-center border-top border-secondary">
+                <div>
+                  <span class="text-gray text-decoration-line-through small d-block mb-1">260.000đ</span>
+                  <span class="text-white fw-bold font-mono fs-5 d-block">99.000₫</span>
+                </div>
+                <a href="nft-page.html" class="btn btn-outline-primary px-3 py-2 rounded-circle"
+                  style="border-radius:50% !important; border-width:2px"><i class="fa-solid fa-cart-shopping"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 2: Youtube -->
+        <div class="col-md-6 col-xl-4">
+          <div class="card h-100 position-relative border-0 shadow-lg" style="border-radius:20px;">
+            <div class="p-4 bg-dark text-center"
+              style="background:#202020 !important; border-top-left-radius:20px; border-top-right-radius:20px">
+              <img src="https://img.icons8.com/color/150/youtube-play.png" alt="Youtube Premium" class="img-fluid"
+                style="height: 120px; object-fit: contain;">
+            </div>
+            <div class="card-body p-4 d-flex flex-column" style="background-color: #3B3B3B;">
+              <h5 class="card-title fw-semibold text-white mb-2" style="font-size: 18px;">Youtube Premium 6 Tháng</h5>
+              <p class="text-gray mb-3 small">Nâng cấp chính chủ email của bạn. Không quảng cáo dài dòng.</p>
+              <div class="mt-auto pt-3 d-flex justify-content-between align-items-center border-top border-secondary">
+                <div>
+                  <span class="text-white fw-bold font-mono fs-5 d-block">169.000₫</span>
+                </div>
+                <a href="nft-page.html" class="btn btn-outline-primary px-3 py-2 rounded-circle"
+                  style="border-radius:50% !important; border-width:2px"><i class="fa-solid fa-cart-shopping"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 3: Canva -->
+        <div class="col-md-6 col-xl-4">
+          <div class="card h-100 position-relative border-0 shadow-lg" style="border-radius:20px;">
+            <span class="badge bg-primary position-absolute top-0 start-0 m-3 py-1 px-2"
+              style="z-index: 2;-webkit-border-radius: 8px;">CỰC HOT</span>
+            <div class="p-4 bg-dark text-center"
+              style="background:#202020 !important; border-top-left-radius:20px; border-top-right-radius:20px">
+              <img src="https://img.icons8.com/fluency/150/canva.png" alt="Canva Pro" class="img-fluid"
+                style="height: 120px; object-fit: contain;">
+            </div>
+            <div class="card-body p-4 d-flex flex-column" style="background-color: #3B3B3B;">
+              <h5 class="card-title fw-semibold text-white mb-2" style="font-size: 18px;">Tài Khoản Canva Pro Vĩnh Viễn
+              </h5>
+              <p class="text-gray mb-3 small">Nâng cấp email chính chủ. Mở khoá toàn bộ tính năng thiết kế.</p>
+              <div class="mt-auto pt-3 d-flex justify-content-between align-items-center border-top border-secondary">
+                <div>
+                  <span class="text-gray text-decoration-line-through small d-block mb-1">550.000đ</span>
+                  <span class="text-white fw-bold font-mono fs-5 d-block">99.000₫</span>
+                </div>
+                <a href="nft-page.html" class="btn btn-outline-primary px-3 py-2 rounded-circle"
+                  style="border-radius:50% !important; border-width:2px"><i class="fa-solid fa-cart-shopping"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="py-5 my-5">
+    <div class="container text-center">
+      <h3 class="display-6 fw-bold mb-2">Quy Trình Mua Hàng</h3>
+      <p class="text-white fs-5 fw-light mb-5 pb-4">Cách thức bảo mật và đơn giản nhất</p>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card h-100 bg-secondary px-4 py-5 text-center">
+            <div class="mb-4">
+              <i class="fa-solid fa-cart-arrow-down text-primary" style="font-size: 50px;"></i>
+            </div>
+            <h4 class="fw-bold text-white mb-3">1. Chọn Tài Khoản</h4>
+            <p class="text-white fw-light">Tìm kiếm và lựa chọn sản phẩm phù hợp. Thêm vào giỏ hàng hoặc mua ngay tức
+              thì.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100 bg-secondary px-4 py-5 text-center">
+            <div class="mb-4">
+              <i class="fa-solid fa-money-check-dollar text-primary" style="font-size: 50px;"></i>
+            </div>
+            <h4 class="fw-bold text-white mb-3">2. Thanh Toán</h4>
+            <p class="text-white fw-light">Cổng thanh toán tự động, đa dạng từ Thẻ nội địa, Visa điện tử và
+              MoMo/ZaloPay.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100 bg-secondary px-4 py-5 text-center">
+            <div class="mb-4">
+              <i class="fa-solid fa-bolt text-primary" style="font-size: 50px;"></i>
+            </div>
+            <h4 class="fw-bold text-white mb-3">3. Nhận Thông Tin</h4>
+            <p class="text-white fw-light">Mã kích hoạt phần mềm hoặc mật khẩu tài khoản sẽ tự động gửi qua Email vòng
+              5s.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="py-5 my-5">
+    <div class="container">
+      <div class="card bg-secondary p-4 p-md-5 border-0">
+        <div class="row align-items-center g-5">
+          <div class="col-md-5 text-center">
+            <i class="fa-solid fa-envelope-open-text" style="font-size: 15rem; color: #5a5a5a;"></i>
+          </div>
+          <div class="col-md-7 pe-md-5">
+            <h3 class="display-6 fw-bold mb-3 text-white">Đăng ký nhận thông báo!</h3>
+            <p class="text-white fw-light fs-5 mb-4">
+              Nhận voucher giảm giá -10% và mã code tài khoản dùng thử vào hộp thư ngay hôm nay. Hơn 5000+ người đã đăng
+              ký.
+            </p>
+            <form class="d-flex flex-column flex-sm-row gap-0 bg-white" style="border-radius: 20px; padding: 4px;">
+              <input type="email" class="form-control border-0 shadow-none bg-white text-dark ps-4 h-100"
+                placeholder="Nhập địa chỉ email của bạn..."
+                style="border-radius: 20px; outline: none; box-shadow:none !important; height: 50px !important;">
+              <button type="button" class="btn btn-primary rounded-pill px-4 text-nowrap" style="height: 50px;">Đăng
+                Ký</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="background-color: #3B3B3B; padding: 60px 0 20px;">
+    <div class="container">
+      <div class="row g-4 mb-5 pb-4 border-bottom" style="border-color: #858584 !important;">
+        <div class="col-lg-5 pe-5">
+          <a class="navbar-brand d-flex align-items-center gap-2 mb-4" href="index.html">
+            <i class="fa-solid fa-store" style="color: var(--bs-primary); font-size: 32px;"></i>
+            <span class="fs-4 fw-bold text-white">Digital Marketplace</span>
+          </a>
+          <p class="text-gray mb-4">Uy tín và chuyên nghiệp trong lĩnh vực cung cấp tài khoản nội dung số chính hãng. Tư
+            vấn sử dụng tận tình 24/7.</p>
+          <p class="text-gray fw-semibold mb-2">Tham gia cộng đồng</p>
+          <div class="d-flex gap-3">
+            <a href="#" class="text-gray text-decoration-none fs-4"><i class="fa-brands fa-discord"></i></a>
+            <a href="#" class="text-gray text-decoration-none fs-4"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="text-gray text-decoration-none fs-4"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#" class="text-gray text-decoration-none fs-4"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <h5 class="fw-bold mb-4">Khám Phá</h5>
+          <ul class="list-unstyled">
+            <li class="mb-3"><a href="#" class="text-gray text-decoration-none">Cửa hàng</a></li>
+            <li class="mb-3"><a href="#" class="text-gray text-decoration-none">Sản phẩm top</a></li>
+            <li class="mb-3"><a href="#" class="text-gray text-decoration-none">Hướng dẫn lấy lại mật khẩu</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-6">
+          <h5 class="fw-bold mb-4">Đồng bộ</h5>
+          <p class="text-gray mb-4">Liên kết an toàn để bảo vệ nội dung khi bạn đổi thiết bị đăng nhập.</p>
+          <a href="sign-up.html" class="btn btn-outline-primary px-4">Đăng Nhập</a>
+        </div>
+      </div>
+
+      <p class="text-gray small mb-0 mt-3">Ⓒ 2026 Digital Marketplace. Giữ lại bản quyền NFT theme cũ nhưng giao diện
+        tối ưu digital store.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

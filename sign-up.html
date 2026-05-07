@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng Ký & Đăng Nhập</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/bootstrap-override.css" />
+</head>
+
+<body class="pt-5 mt-5">
+
+  <nav class="navbar navbar-expand-lg fixed-top shadow" style="background-color: var(--bs-body-bg); padding: 20px 0;">
+    <div class="container pb-0">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+        <i class="fa-solid fa-store" style="color: var(--bs-primary); font-size: 28px;"></i>
+        <span class="fs-4 fw-bold text-white">Digital Marketplace</span>
+      </a>
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navMenu">
+        <i class="fa-solid fa-bars text-white"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold">
+          <li class="nav-item px-3"><a class="nav-link text-white" href="index.html">Trang Chủ</a></li>
+          <li class="nav-item px-3"><a class="nav-link text-white" href="marketplace.html">Cửa Hàng</a></li>
+          <li class="nav-item px-3"><a class="nav-link text-white" href="#">Bảng Xếp Hạng</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="min-vh-100 d-flex align-items-center">
+    <div class="container py-5">
+      <div class="row g-0 justify-content-center">
+
+        <!-- Image Side -->
+        <div class="col-lg-6 d-none d-lg-block">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
+            alt="Digital Art" class="img-fluid h-100 object-fit-cover"
+            style="border-top-left-radius: 20px; border-bottom-left-radius: 20px;">
+        </div>
+
+        <!-- Form Side -->
+        <div class="col-lg-6 col-md-8">
+          <div class="card h-100 p-4 p-md-5 border-0 shadow-lg"
+            style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+
+            <h1 class="display-6 fw-bold text-white mb-2">Tạo Tài Khoản</h1>
+            <p class="text-gray fs-5 mb-5 fw-light">Chào mừng bạn đến hệ thống số hoá hàng đầu. Điền thông tin bên dưới
+              để tiếp tục.</p>
+
+            <form>
+              <div class="mb-4 position-relative">
+                <i class="fa-solid fa-user position-absolute text-gray"
+                  style="top:50%; transform:translateY(-50%); left:15px;"></i>
+                <input type="text" class="form-control" placeholder="Tên Đăng Nhập"
+                  style="padding-left: 45px; border-radius: 20px; height: 50px;">
+              </div>
+              <div class="mb-4 position-relative">
+                <i class="fa-regular fa-envelope position-absolute text-gray"
+                  style="top:50%; transform:translateY(-50%); left:15px;"></i>
+                <input type="email" class="form-control" placeholder="Địa chỉ Email"
+                  style="padding-left: 45px; border-radius: 20px; height: 50px;">
+              </div>
+              <div class="mb-5 position-relative">
+                <i class="fa-solid fa-lock position-absolute text-gray"
+                  style="top:50%; transform:translateY(-50%); left:15px;"></i>
+                <input type="password" class="form-control" placeholder="Mật khẩu"
+                  style="padding-left: 45px; border-radius: 20px; height: 50px;">
+              </div>
+
+              <button class="btn btn-primary w-100 rounded-pill fw-bold fs-5 mb-4" style="height: 55px;">Tạo Tài
+                Khoản</button>
+
+              <div class="text-center">
+                <p class="text-gray mb-0">Đã có tài khoản? <a href="#"
+                    class="text-primary text-decoration-none fw-semibold">Đăng nhập</a></p>
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
