@@ -2,7 +2,7 @@
 
 **VPS IP:** `103.228.36.244`  
 **Domain:** `acc.khuatminh.com`  
-**Thư mục deploy:** `/opt/marketplace`  
+**Thư mục deploy:** `/opt/marketplace/PrimePass`  
 **Stack:** Spring Boot 3 · MySQL 8 · Nginx · Docker Compose · Let's Encrypt · GitHub Actions
 
 ---
@@ -72,15 +72,15 @@ apt install git -y
 > **Quan trọng:** Phải có dấu `.` ở cuối lệnh `git clone` để clone thẳng vào thư mục hiện tại, không tạo thư mục con.
 
 ```bash
-mkdir -p /opt/marketplace
-cd /opt/marketplace
+mkdir -p /opt/marketplace/PrimePass
+cd /opt/marketplace/PrimePass
 git clone https://github.com/khuatminh/PrimePass.git .
 ```
 
 Kiểm tra file đã có:
 
 ```bash
-ls -la /opt/marketplace
+ls -la /opt/marketplace/PrimePass
 # Phải thấy: Dockerfile  docker-compose.yml  .env.example  nginx/  ...
 ```
 
@@ -124,7 +124,7 @@ File `.env` chứa thông tin nhạy cảm — **KHÔNG commit lên git**, chỉ
 ### 4.1 Tạo file .env từ template
 
 ```bash
-cd /opt/marketplace
+cd /opt/marketplace/PrimePass
 cp .env.example .env
 ```
 
@@ -166,13 +166,13 @@ VNPAY_RETURN_URL=https://acc.khuatminh.com/payment/callback
 
 ```bash
 # Chỉ root mới đọc được file này
-chmod 600 /opt/marketplace/.env
+chmod 600 /opt/marketplace/PrimePass/.env
 ```
 
 ### 4.5 Kiểm tra nội dung đã đúng
 
 ```bash
-cat /opt/marketplace/.env
+cat /opt/marketplace/PrimePass/.env
 ```
 
 ---
@@ -184,14 +184,14 @@ cat /opt/marketplace/.env
 ### Bước 1: Tạo thư mục cho Certbot
 
 ```bash
-cd /opt/marketplace
+cd /opt/marketplace/PrimePass
 mkdir -p certbot/conf certbot/www
 ```
 
 ### Bước 2: Tạo cấu hình Nginx tạm (chỉ HTTP)
 
 ```bash
-cat > /opt/marketplace/nginx/conf.d/default.conf << 'EOF'
+cat > /opt/marketplace/PrimePass/nginx/conf.d/default.conf << 'EOF'
 server {
     listen 80;
     server_name acc.khuatminh.com;
@@ -211,7 +211,7 @@ EOF
 ### Bước 3: Khởi động Nginx (chỉ mình nginx, chưa cần app + mysql)
 
 ```bash
-cd /opt/marketplace
+cd /opt/marketplace/PrimePass
 docker compose up -d nginx
 ```
 
@@ -227,8 +227,8 @@ curl http://acc.khuatminh.com
 
 ```bash
 docker run --rm \
-  -v /opt/marketplace/certbot/conf:/etc/letsencrypt \
-  -v /opt/marketplace/certbot/www:/var/www/certbot \
+  -v /opt/marketplace/PrimePass/certbot/conf:/etc/letsencrypt \
+  -v /opt/marketplace/PrimePass/certbot/www:/var/www/certbot \
   certbot/certbot certonly \
   --webroot \
   --webroot-path=/var/www/certbot \
@@ -247,7 +247,7 @@ Certificate is saved at: /etc/letsencrypt/live/acc.khuatminh.com/fullchain.pem
 ### Bước 5: Khôi phục cấu hình Nginx đầy đủ (HTTPS)
 
 ```bash
-cat > /opt/marketplace/nginx/conf.d/default.conf << 'EOF'
+cat > /opt/marketplace/PrimePass/nginx/conf.d/default.conf << 'EOF'
 server {
     listen 80;
     server_name acc.khuatminh.com;
@@ -302,7 +302,7 @@ crontab -e
 Thêm dòng sau vào cuối file (gia hạn lúc 3h sáng mỗi 2 tháng):
 
 ```
-0 3 1 */2 * docker run --rm -v /opt/marketplace/certbot/conf:/etc/letsencrypt -v /opt/marketplace/certbot/www:/var/www/certbot certbot/certbot renew --quiet && docker compose -f /opt/marketplace/docker-compose.yml exec nginx nginx -s reload
+0 3 1 */2 * docker run --rm -v /opt/marketplace/PrimePass/certbot/conf:/etc/letsencrypt -v /opt/marketplace/PrimePass/certbot/www:/var/www/certbot certbot/certbot renew --quiet && docker compose -f /opt/marketplace/PrimePass/docker-compose.yml exec nginx nginx -s reload
 ```
 
 ---
@@ -320,7 +320,7 @@ Thêm lần lượt 4 secrets:
 | `VPS_HOST`    | `103.228.36.244`                                              |
 | `VPS_USER`    | `root`                                                        |
 | `VPS_SSH_KEY` | Toàn bộ nội dung file `/root/.ssh/deploy_key` (private key)  |
-| `DEPLOY_PATH` | `/opt/marketplace`                                            |
+| `DEPLOY_PATH` | `/opt/marketplace/PrimePass`                                            |
 
 **Cách lấy nội dung VPS_SSH_KEY:**
 
@@ -357,7 +357,7 @@ Vào **https://github.com/khuatminh/PrimePass/actions** để xem pipeline chạ
 Sau khi đã có SSL certificate, chạy toàn bộ stack:
 
 ```bash
-cd /opt/marketplace
+cd /opt/marketplace/PrimePass
 
 # Khởi động tất cả services (lần đầu build mất 5–10 phút)
 docker compose up -d --build
@@ -414,21 +414,21 @@ docker compose restart mysql
 docker compose exec mysql mysqldump -uroot -pYOUR_PASSWORD digital_marketplace > backup_$(date +%Y%m%d_%H%M).sql
 
 # Hoặc đọc từ .env tự động
-source /opt/marketplace/.env
+source /opt/marketplace/PrimePass/.env
 docker compose exec mysql mysqldump -uroot -p${DB_PASS} digital_marketplace > backup_$(date +%Y%m%d_%H%M).sql
 ```
 
 ### Restore database
 
 ```bash
-source /opt/marketplace/.env
+source /opt/marketplace/PrimePass/.env
 docker compose exec -T mysql mysql -uroot -p${DB_PASS} digital_marketplace < backup_20260507_1200.sql
 ```
 
 ### Cập nhật app thủ công (không qua CI/CD)
 
 ```bash
-cd /opt/marketplace
+cd /opt/marketplace/PrimePass
 git pull origin main
 docker compose up -d --build
 docker image prune -f
@@ -439,13 +439,13 @@ docker image prune -f
 ```bash
 # Xem thông tin certificate
 docker run --rm \
-  -v /opt/marketplace/certbot/conf:/etc/letsencrypt \
+  -v /opt/marketplace/PrimePass/certbot/conf:/etc/letsencrypt \
   certbot/certbot certificates
 
 # Gia hạn thủ công
 docker run --rm \
-  -v /opt/marketplace/certbot/conf:/etc/letsencrypt \
-  -v /opt/marketplace/certbot/www:/var/www/certbot \
+  -v /opt/marketplace/PrimePass/certbot/conf:/etc/letsencrypt \
+  -v /opt/marketplace/PrimePass/certbot/www:/var/www/certbot \
   certbot/certbot renew --quiet
 
 docker compose exec nginx nginx -s reload
@@ -478,7 +478,7 @@ docker compose exec nginx nginx -s reload
 - [ ] Thêm `VPS_HOST` = `103.228.36.244` vào GitHub Secrets
 - [ ] Thêm `VPS_USER` = `root` vào GitHub Secrets
 - [ ] Thêm `VPS_SSH_KEY` (nội dung `/root/.ssh/deploy_key`) vào GitHub Secrets
-- [ ] Thêm `DEPLOY_PATH` = `/opt/marketplace` vào GitHub Secrets
+- [ ] Thêm `DEPLOY_PATH` = `/opt/marketplace/PrimePass` vào GitHub Secrets
 
 ### Phần 5 — Go live
 - [ ] Chạy `docker compose up -d --build` lần đầu
