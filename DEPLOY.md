@@ -42,7 +42,7 @@ Docker Compose chạy 3 services:
 
 ```bash
 # Kết nối VPS
-ssh root@<VPS_IP>
+ssh root@103.228.36.244
 
 # Cập nhật hệ thống
 apt update && apt upgrade -y
@@ -94,9 +94,9 @@ cat ~/.ssh/deploy_key
 
 Vào DNS manager của domain `khuatminh.com`, thêm bản ghi:
 
-| Type | Name | Value       | TTL  |
-|------|------|-------------|------|
-| A    | acc  | `<VPS_IP>`  | 3600 |
+| Type | Name | Value              | TTL  |
+|------|------|--------------------|------|
+| A    | acc  | `103.228.36.244`   | 3600 |
 
 Kiểm tra DNS đã lan truyền:
 
@@ -354,8 +354,8 @@ Vào repo GitHub → **Settings → Secrets and variables → Actions → New re
 
 | Secret name   | Giá trị                                         |
 |---------------|--------------------------------------------------|
-| `VPS_HOST`    | IP của VPS (ví dụ: `123.456.789.0`)             |
-| `VPS_USER`    | User SSH (thường là `root`)                      |
+| `VPS_HOST`    | `103.228.36.244`                                 |
+| `VPS_USER`    | `root`                                           |
 | `VPS_SSH_KEY` | Nội dung file `~/.ssh/deploy_key` (private key) |
 | `DEPLOY_PATH` | `/opt/marketplace`                               |
 
@@ -529,7 +529,7 @@ docker compose exec nginx nginx -s reload
 
 ## Checklist tổng kết
 
-- [ ] Trỏ DNS `acc` → IP VPS, chờ lan truyền
+- [ ] Trỏ DNS `acc` → `103.228.36.244`, chờ lan truyền
 - [ ] Cài Docker & Docker Compose trên VPS
 - [ ] Clone repo vào `/opt/marketplace`
 - [ ] Tạo file `.env` với mật khẩu thật
