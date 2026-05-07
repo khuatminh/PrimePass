@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.devpro.marketplace.entity.*;
 import vn.devpro.marketplace.repository.ProductVariantRepository;
-import vn.devpro.marketplace.repository.ProductVariantTypeRepository;
 import vn.devpro.marketplace.service.CategoryService;
 import vn.devpro.marketplace.service.ProductService;
 
@@ -28,7 +27,6 @@ public class AdminProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final ProductVariantRepository variantRepository;
-    private final ProductVariantTypeRepository variantTypeRepository;
 
     @Value("${app.upload-dir}")
     private String uploadDir;
@@ -142,7 +140,6 @@ public class AdminProductController {
         Product product = productService.findById(id);
         model.addAttribute("product", product);
         model.addAttribute("variants", variantRepository.findByProductAndIsActiveTrue(product));
-        model.addAttribute("variantTypes", variantTypeRepository.findByProductOrderBySortOrder(product));
         return "admin/product/variants";
     }
 

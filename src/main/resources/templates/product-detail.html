@@ -94,7 +94,8 @@
               <label th:each="v, stat : ${variants}"
                      class="pd-option"
                      th:classappend="${stat.first} ? ' selected' : ''"
-                     th:onclick="'selectVariant(' + ${v.id} + ', &quot;₫' + ${#numbers.formatDecimal(v.price, 0, 'COMMA', 0, 'POINT')} + '&quot;, this)'">
+                     th:attr="data-variant-id=${v.id},data-variant-price=${v.price}"
+                     onclick="selectVariantFromLabel(this)">
                 <input type="radio" name="_variantRadio"
                        th:value="${v.id}"
                        th:checked="${stat.first}" />
@@ -174,8 +175,11 @@
           <th:block th:each="i : ${#numbers.sequence(1, review.rating)}">
             <i class="fa-solid fa-star"></i>
           </th:block>
-          <th:block th:each="i : ${#numbers.sequence(review.rating + 1, 5)}">
-            <i class="fa-regular fa-star" style="color:var(--line-strong)"></i>
+          
+          <th:block th:if="${review.rating lt 5}">
+            <th:block th:each="i : ${#numbers.sequence(review.rating + 1, 5)}">
+              <i class="fa-regular fa-star" style="color:var(--line-strong)"></i>
+            </th:block>
           </th:block>
         </div>
       </div>
@@ -224,6 +228,13 @@
       if (firstInput) variantIdInput.value = firstInput.value;
     }
   })();
+
+  function selectVariantFromLabel(el) {
+    const id = el.dataset.variantId;
+    const price = Number(el.dataset.variantPrice);
+    const priceText = '₫' + price.toLocaleString('en-US');
+    selectVariant(id, priceText, el);
+  }
 
   function selectVariant(id, priceText, el) {
     variantIdInput.value = id;

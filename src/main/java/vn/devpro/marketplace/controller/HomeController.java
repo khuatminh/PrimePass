@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import vn.devpro.marketplace.entity.*;
 import vn.devpro.marketplace.repository.ProductVariantRepository;
-import vn.devpro.marketplace.repository.ProductVariantTypeRepository;
 import vn.devpro.marketplace.security.UserPrincipal;
 import vn.devpro.marketplace.service.CategoryService;
 import vn.devpro.marketplace.service.ProductService;
@@ -22,7 +21,6 @@ public class HomeController extends BaseController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
-    private final ProductVariantTypeRepository variantTypeRepository;
     private final ProductVariantRepository variantRepository;
     private final ReviewService reviewService;
 
@@ -62,15 +60,12 @@ public class HomeController extends BaseController {
             Authentication authentication) {
 
         Product product = productService.findBySlug(slug);
-        List<ProductVariantType> variantTypes =
-                variantTypeRepository.findByProductOrderBySortOrder(product);
         List<ProductVariant> variants =
                 variantRepository.findByProductAndIsActiveTrue(product);
         List<Review> reviews = reviewService.findByProduct(product);
         Double avgRating = reviewService.getAverageRating(product.getId());
 
         model.addAttribute("product", product);
-        model.addAttribute("variantTypes", variantTypes);
         model.addAttribute("variants", variants);
         model.addAttribute("reviews", reviews);
         model.addAttribute("avgRating", avgRating != null ? avgRating : 0.0);
