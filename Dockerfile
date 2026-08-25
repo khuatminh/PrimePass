@@ -12,4 +12,4 @@ WORKDIR /app
 COPY --from=builder /build/target/marketplace-0.0.1-SNAPSHOT.jar app.jar
 VOLUME /app/uploads
 EXPOSE 8386
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]

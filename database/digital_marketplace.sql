@@ -4,6 +4,8 @@
 -- Date: 2026-03-08
 -- =============================================
 
+SET NAMES utf8mb4;
+
 DROP DATABASE IF EXISTS digital_marketplace;
 CREATE DATABASE digital_marketplace CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE digital_marketplace;
@@ -198,10 +200,10 @@ CREATE TABLE reviews (
 
 -- Admin & Khách
 INSERT INTO users (username, email, password_hash, full_name, phone, role) VALUES
-('admin',       'admin@digitalstore.vn',    '$2y$10$hashedpasswordhere',  'Quản Trị Viên',    '0901234567',   'admin'),
-('nguyenhoang', 'hoang@gmail.com',          '$2y$10$hashedpasswordhere',  'Nguyễn Hoàng',     '0912345678',   'customer'),
-('trananh',     'trananh92@gmail.com',      '$2y$10$hashedpasswordhere',  'Trần Anh',         '0923456789',   'customer'),
-('linhchi',     'linhchi@yahoo.com',         '$2y$10$hashedpasswordhere',  'Linh Chi',         '0934567890',   'customer');
+('admin',       'admin@example.com',         '$2y$10$hashedpasswordhere',  'Quản Trị Viên',    '0000000000',   'admin'),
+('nguyenhoang', 'nguyenhoang@example.com',  '$2y$10$hashedpasswordhere',  'Nguyễn Hoàng',     '0000000001',   'customer'),
+('trananh',     'trananh@example.com',       '$2y$10$hashedpasswordhere',  'Trần Anh',         '0000000002',   'customer'),
+('linhchi',     'linhchi@example.com',       '$2y$10$hashedpasswordhere',  'Linh Chi',         '0000000003',   'customer');
 
 -- Danh mục
 INSERT INTO categories (name, slug, icon_url, description, sort_order) VALUES
@@ -226,12 +228,12 @@ INSERT INTO products (category_id, name, slug, description, image_url, original_
 
 -- Kho tài khoản & key mẫu  
 INSERT INTO product_keys (product_id, key_type, account_email, account_password, status) VALUES
-(1, 'account', 'nf_user01@proton.me',    'Nf@Secure2026!',    'available'),
-(1, 'account', 'nf_user02@proton.me',    'Nf@Premium88!',     'available'),
-(1, 'account', 'nf_user03@proton.me',    'Nf@Watch4K!',       'sold'),
-(3, 'account', 'sp_music01@proton.me',   'Sp@Song2026!',      'available'),
-(5, 'account', 'canva_pro01@proton.me',  'Cv@Design99!',      'available'),
-(5, 'account', 'canva_pro02@proton.me',  'Cv@Creative!',      'available');
+(1, 'account', 'nf_user01@example.com',    'NOT_A_REAL_PASSWORD',  'available'),
+(1, 'account', 'nf_user02@example.com',    'NOT_A_REAL_PASSWORD',  'available'),
+(1, 'account', 'nf_user03@example.com',    'NOT_A_REAL_PASSWORD',  'sold'),
+(3, 'account', 'sp_music01@example.com',   'NOT_A_REAL_PASSWORD',  'available'),
+(5, 'account', 'canva_pro01@example.com',  'NOT_A_REAL_PASSWORD',  'available'),
+(5, 'account', 'canva_pro02@example.com',  'NOT_A_REAL_PASSWORD',  'available');
 
 INSERT INTO product_keys (product_id, key_type, serial_key, status) VALUES
 (6, 'serial_key', 'ADBE-XXXX-YYYY-ZZZZ-1111',  'available'),

@@ -11,15 +11,20 @@ marketplace-uploads/
 
 # Docker / Deploy (secrets - không commit)
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
 certbot/
+backup*.sql
+*.sql.gz
 
 # IDE / Tools
 .vscode/
 .agent/
 .superpowers/
 docs/superpowers/
-
-# Static prototypes (not part of Spring Boot app)
-adminkit-main/
-JavaWeb34/
-css/
