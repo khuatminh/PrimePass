@@ -140,11 +140,15 @@ CREATE TABLE orders (
     status          ENUM('pending', 'paid', 'completed', 'cancelled', 'refunded') NOT NULL DEFAULT 'pending',
     payment_method  VARCHAR(50)     DEFAULT NULL,
     note            TEXT            DEFAULT NULL,
+    vnpay_txn_ref   VARCHAR(50)     DEFAULT NULL,
+    vnpay_transaction_id VARCHAR(50) DEFAULT NULL,
     created_at      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     INDEX idx_orders_user (user_id),
     INDEX idx_orders_status (status),
+    UNIQUE INDEX uk_orders_vnpay_txn_ref (vnpay_txn_ref),
+    INDEX idx_orders_vnpay_transaction_id (vnpay_transaction_id),
     CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_orders_coupon FOREIGN KEY (coupon_id) REFERENCES coupons(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
@@ -156,6 +160,7 @@ CREATE TABLE order_items (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     order_id        INT             NOT NULL,
     product_id      INT             NOT NULL,
+    variant_id      INT             DEFAULT NULL,
     product_key_id  INT             DEFAULT NULL,
     quantity        INT             NOT NULL DEFAULT 1,
     unit_price      DECIMAL(12,0)   NOT NULL DEFAULT 0,
@@ -163,8 +168,10 @@ CREATE TABLE order_items (
 
     INDEX idx_oi_order (order_id),
     INDEX idx_oi_product (product_id),
+    INDEX idx_oi_variant (variant_id),
     CONSTRAINT fk_oi_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     CONSTRAINT fk_oi_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    CONSTRAINT fk_oi_variant FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE SET NULL,
     CONSTRAINT fk_oi_key FOREIGN KEY (product_key_id) REFERENCES product_keys(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
